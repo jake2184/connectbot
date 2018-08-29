@@ -200,13 +200,13 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 		setOnKeyListener(bridge.getKeyHandler());
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			terminalTextViewOverlay = new TerminalTextViewOverlay(context, this);
-			terminalTextViewOverlay.setLayoutParams(
-					new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-			addView(terminalTextViewOverlay, 0);
+//			terminalTextViewOverlay = new TerminalTextViewOverlay(context, this);
+//			terminalTextViewOverlay.setLayoutParams(
+//					new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+			//addView(terminalTextViewOverlay, 0);
 
 			// Once terminalTextViewOverlay is active, allow it to handle key events instead.
-			terminalTextViewOverlay.setOnKeyListener(bridge.getKeyHandler());
+			//terminalTextViewOverlay.setOnKeyListener(bridge.getKeyHandler());
 		}
 
 		clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -293,75 +293,75 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 		}
 
 		// Old version of copying, only for pre-Honeycomb.
-		if (terminalTextViewOverlay == null) {
-			// when copying, highlight the area
-			if (bridge.isSelectingForCopy()) {
-				SelectionArea area = bridge.getSelectionArea();
-				int row = (int) Math.floor(event.getY() / bridge.charHeight);
-				int col = (int) Math.floor(event.getX() / bridge.charWidth);
-
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					// recording starting area
-					viewPager.setPagingEnabled(false);
-					if (area.isSelectingOrigin()) {
-						area.setRow(row);
-						area.setColumn(col);
-						lastTouchedRow = row;
-						lastTouchedCol = col;
-						bridge.redraw();
-					}
-					return true;
-				case MotionEvent.ACTION_MOVE:
-							/* ignore when user hasn't moved since last time so
-							 * we can fine-tune with directional pad
-							 */
-					if (row == lastTouchedRow && col == lastTouchedCol)
-						return true;
-
-					// if the user moves, start the selection for other corner
-					area.finishSelectingOrigin();
-
-					// update selected area
-					area.setRow(row);
-					area.setColumn(col);
-					lastTouchedRow = row;
-					lastTouchedCol = col;
-					bridge.redraw();
-					return true;
-				case MotionEvent.ACTION_UP:
-							/* If they didn't move their finger, maybe they meant to
-							 * select the rest of the text with the directional pad.
-							 */
-					if (area.getLeft() == area.getRight() &&
-							area.getTop() == area.getBottom()) {
-						return true;
-					}
-
-					// copy selected area to clipboard
-					String copiedText = area.copyFrom(bridge.buffer);
-
-					clipboard.setText(copiedText);
-					Toast.makeText(
-							context,
-							context.getResources().getQuantityString(R.plurals.console_copy_done,
-									copiedText.length(), copiedText.length()),
-							Toast.LENGTH_LONG).show();
-
-					// fall through to clear state
-
-				case MotionEvent.ACTION_CANCEL:
-					// make sure we clear any highlighted area
-					area.reset();
-					bridge.setSelectingForCopy(false);
-					bridge.redraw();
-					viewPager.setPagingEnabled(true);
-					return true;
-				}
-			}
-
-			return true;
-		}
+//		if (terminalTextViewOverlay == null) {
+//			// when copying, highlight the area
+//			if (bridge.isSelectingForCopy()) {
+//				SelectionArea area = bridge.getSelectionArea();
+//				int row = (int) Math.floor(event.getY() / bridge.charHeight);
+//				int col = (int) Math.floor(event.getX() / bridge.charWidth);
+//
+//				switch (event.getAction()) {
+//				case MotionEvent.ACTION_DOWN:
+//					// recording starting area
+//					viewPager.setPagingEnabled(false);
+//					if (area.isSelectingOrigin()) {
+//						area.setRow(row);
+//						area.setColumn(col);
+//						lastTouchedRow = row;
+//						lastTouchedCol = col;
+//						bridge.redraw();
+//					}
+//					return true;
+//				case MotionEvent.ACTION_MOVE:
+//							/* ignore when user hasn't moved since last time so
+//							 * we can fine-tune with directional pad
+//							 */
+//					if (row == lastTouchedRow && col == lastTouchedCol)
+//						return true;
+//
+//					// if the user moves, start the selection for other corner
+//					area.finishSelectingOrigin();
+//
+//					// update selected area
+//					area.setRow(row);
+//					area.setColumn(col);
+//					lastTouchedRow = row;
+//					lastTouchedCol = col;
+//					bridge.redraw();
+//					return true;
+//				case MotionEvent.ACTION_UP:
+//							/* If they didn't move their finger, maybe they meant to
+//							 * select the rest of the text with the directional pad.
+//							 */
+//					if (area.getLeft() == area.getRight() &&
+//							area.getTop() == area.getBottom()) {
+//						return true;
+//					}
+//
+//					// copy selected area to clipboard
+//					String copiedText = area.copyFrom(bridge.buffer);
+//
+//					clipboard.setText(copiedText);
+//					Toast.makeText(
+//							context,
+//							context.getResources().getQuantityString(R.plurals.console_copy_done,
+//									copiedText.length(), copiedText.length()),
+//							Toast.LENGTH_LONG).show();
+//
+//					// fall through to clear state
+//
+//				case MotionEvent.ACTION_CANCEL:
+//					// make sure we clear any highlighted area
+//					area.reset();
+//					bridge.setSelectingForCopy(false);
+//					bridge.redraw();
+//					viewPager.setPagingEnabled(true);
+//					return true;
+//				}
+//			}
+//
+//			return true;
+//		}
 
 		return super.onTouchEvent(event);
 	}
