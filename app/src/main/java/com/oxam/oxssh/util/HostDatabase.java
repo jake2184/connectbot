@@ -451,7 +451,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 			host.setLastConnect(c.getLong(COL_LASTCONNECT));
 			host.setColor(c.getString(COL_COLOR));
 			host.setPostLogin(c.getString(COL_POSTLOGIN));
-			host.setWantSession(Boolean.valueOf(c.getString(COL_WANTSESSION)));
 			host.setDelKey(c.getString(COL_DELKEY));
 			host.setFontSize(c.getInt(COL_FONTSIZE));
 			host.setCompression(Boolean.valueOf(c.getString(COL_COMPRESSION)));

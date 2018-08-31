@@ -379,15 +379,7 @@ public class HostEditorFragment extends Fragment {
 			}
 		});
 
-		mStartShellSwitch = view.findViewById(R.id.start_shell_item);
-		mStartShellSwitch.setChecked(mHost.getWantSession());
-		mStartShellSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				mHost.setWantSession(isChecked);
-				handleHostChange();
-			}
-		});
+
 
 		mStayConnectedSwitch = view.findViewById(R.id.stay_connected_item);
 		mStayConnectedSwitch.setChecked(mHost.getStayConnected());

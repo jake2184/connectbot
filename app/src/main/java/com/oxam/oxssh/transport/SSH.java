@@ -256,12 +256,6 @@ public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveC
 	private void finishConnection() {
 		authenticated = true;
 
-		if (!host.getWantSession()) {
-			bridge.outputLine(manager.res.getString(R.string.terminal_no_session));
-			bridge.onConnected();
-			return;
-		}
-
 		try {
 			session = connection.openSession();
 

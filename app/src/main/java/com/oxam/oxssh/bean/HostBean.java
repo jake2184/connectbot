@@ -45,7 +45,6 @@ public class HostBean extends AbstractBean {
 	private long lastConnect = -1;
 	private String color;
 	private String postLogin = null;
-	private boolean wantSession = true;
 	private String delKey = HostDatabase.DELKEY_DEL;
 	private int fontSize = DEFAULT_FONT_SIZE;
 	private boolean compression = false;
@@ -127,12 +126,6 @@ public class HostBean extends AbstractBean {
 	public String getPostLogin() {
 		return postLogin;
 	}
-	public void setWantSession(boolean wantSession) {
-		this.wantSession = wantSession;
-	}
-	public boolean getWantSession() {
-		return wantSession;
-	}
 	public void setDelKey(String delKey) {
 		this.delKey = delKey;
 	}
@@ -198,7 +191,6 @@ public class HostBean extends AbstractBean {
 		values.put(HostDatabase.FIELD_HOST_LASTCONNECT, lastConnect);
 		values.put(HostDatabase.FIELD_HOST_COLOR, color);
 		values.put(HostDatabase.FIELD_HOST_POSTLOGIN, postLogin);
-		values.put(HostDatabase.FIELD_HOST_WANTSESSION, Boolean.toString(wantSession));
 		values.put(HostDatabase.FIELD_HOST_DELKEY, delKey);
 		values.put(HostDatabase.FIELD_HOST_FONTSIZE, fontSize);
 		values.put(HostDatabase.FIELD_HOST_COMPRESSION, Boolean.toString(compression));
@@ -219,7 +211,6 @@ public class HostBean extends AbstractBean {
 		host.setLastConnect(values.getAsLong(HostDatabase.FIELD_HOST_LASTCONNECT));
 		host.setColor(values.getAsString(HostDatabase.FIELD_HOST_COLOR));
 		host.setPostLogin(values.getAsString(HostDatabase.FIELD_HOST_POSTLOGIN));
-		host.setWantSession(Boolean.valueOf(values.getAsString(HostDatabase.FIELD_HOST_WANTSESSION)));
 		host.setDelKey(values.getAsString(HostDatabase.FIELD_HOST_DELKEY));
 		host.setFontSize(values.getAsInteger(HostDatabase.FIELD_HOST_FONTSIZE));
 		host.setCompression(Boolean.valueOf(values.getAsString(HostDatabase.FIELD_HOST_COMPRESSION)));

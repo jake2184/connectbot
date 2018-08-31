@@ -240,11 +240,7 @@ public class TerminalBridge implements VDUDisplay {
 			}
 		};
 
-		// Don't keep any scrollback if a session is not being opened.
-		if (host.getWantSession())
-			buffer.setBufferSize(scrollback);
-		else
-			buffer.setBufferSize(0);
+		buffer.setBufferSize(scrollback);
 
 		resetColors();
 		buffer.setDisplay(this);
