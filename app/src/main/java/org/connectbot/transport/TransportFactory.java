@@ -37,8 +37,7 @@ public class TransportFactory {
 
 	private static String[] transportNames = {
 		SSH.getProtocolName(),
-		Telnet.getProtocolName(),
-		Local.getProtocolName(),
+		Telnet.getProtocolName()
 	};
 
 	/**
@@ -50,8 +49,6 @@ public class TransportFactory {
 			return new SSH();
 		} else if (Telnet.getProtocolName().equals(protocol)) {
 			return new Telnet();
-		} else if (Local.getProtocolName().equals(protocol)) {
-			return new Local();
 		} else {
 			return null;
 		}
@@ -65,10 +62,7 @@ public class TransportFactory {
 			return SSH.getUri(input);
 		else if (Telnet.getProtocolName().equals(scheme))
 			return Telnet.getUri(input);
-		else if (Local.getProtocolName().equals(scheme)) {
-			Log.d("TransportFactory", "Got to the local parsing area");
-			return Local.getUri(input);
-		} else
+		else
 			return null;
 	}
 
@@ -83,11 +77,6 @@ public class TransportFactory {
 		return a.getClass().equals(b.getClass());
 	}
 
-	public static boolean canForwardPorts(String protocol) {
-		// TODO uh, make this have less knowledge about its children
-		return SSH.getProtocolName().equals(protocol);
-	}
-
 	/**
 	 * @param protocol text name of protocol
 	 * @param context
@@ -98,8 +87,6 @@ public class TransportFactory {
 			return SSH.getFormatHint(context);
 		} else if (Telnet.getProtocolName().equals(protocol)) {
 			return Telnet.getFormatHint(context);
-		} else if (Local.getProtocolName().equals(protocol)) {
-			return Local.getFormatHint(context);
 		} else {
 			return AbsTransport.getFormatHint(context);
 		}

@@ -17,7 +17,6 @@
 
 package org.connectbot.bean;
 
-import org.connectbot.transport.Local;
 import org.connectbot.transport.SSH;
 import org.connectbot.transport.Telnet;
 import org.connectbot.transport.TransportFactory;
@@ -329,8 +328,6 @@ public class HostBean extends AbstractBean {
 				return hostname;
 			else
 				return hostname + ":" + port;
-		} else if (Local.getProtocolName().equals(protocol)) {
-			return nickname;
 		}
 
 		// Fail gracefully.

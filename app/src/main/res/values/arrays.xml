@@ -95,22 +95,6 @@
 		<item>none</item>
 	</string-array>
 
-	<string-array name="list_pubkeyids" translatable="false">
-		<item>@string/list_pubkeyids_none</item>
-		<item>@string/list_pubkeyids_any</item>
-	</string-array>
-
-	<string-array name="list_pubkeyids_value" translatable="false">
-		<item>-2</item>
-		<item>-1</item>
-	</string-array>
-
-	<string-array name="list_portforward_types" translatable="false">
-		<item>@string/portforward_local</item>
-		<item>@string/portforward_remote</item>
-		<item>@string/portforward_dynamic</item>
-	</string-array>
-
 	<string-array name="list_delkey" translatable="false">
 		<item>@string/list_delkey_del</item>
 		<item>@string/list_delkey_backspace</item>
