@@ -247,45 +247,7 @@ public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveC
 		bridge.outputLine(manager.res.getString(R.string.terminal_auth));
 
 		try {
-			long pubkeyId = host.getPubkeyId();
-
-			if (!pubkeysExhausted &&
-					pubkeyId != HostDatabase.PUBKEYID_NEVER &&
-					connection.isAuthMethodAvailable(host.getUsername(), AUTH_PUBLICKEY)) {
-
-				// if explicit pubkey defined for this host, then prompt for password as needed
-				// otherwise just try all in-memory keys held in terminalmanager
-
-				if (pubkeyId == HostDatabase.PUBKEYID_ANY) {
-					// try each of the in-memory keys
-					bridge.outputLine(manager.res
-							.getString(R.string.terminal_auth_pubkey_any));
-					for (Entry<String, KeyHolder> entry : manager.loadedKeypairs.entrySet()) {
-						if (entry.getValue().bean.isConfirmUse()
-								&& !promptForPubkeyUse(entry.getKey()))
-							continue;
-
-						if (this.tryPublicKey(host.getUsername(), entry.getKey(),
-								entry.getValue().pair)) {
-							finishConnection();
-							break;
-						}
-					}
-				} else {
-					bridge.outputLine(manager.res.getString(R.string.terminal_auth_pubkey_specific));
-					// use a specific key for this host, as requested
-					PubkeyBean pubkey = manager.pubkeydb.findPubkeyById(pubkeyId);
-
-					if (pubkey == null)
-						bridge.outputLine(manager.res.getString(R.string.terminal_auth_pubkey_invalid));
-					else
-						if (tryPublicKey(pubkey))
-							finishConnection();
-				}
-
-				pubkeysExhausted = true;
-			} else if (interactiveCanContinue &&
-					connection.isAuthMethodAvailable(host.getUsername(), AUTH_KEYBOARDINTERACTIVE)) {
+			if (interactiveCanContinue && connection.isAuthMethodAvailable(host.getUsername(), AUTH_KEYBOARDINTERACTIVE)) {
 				// this auth method will talk with us using InteractiveCallback interface
 				// it blocks until authentication finishes
 				bridge.outputLine(manager.res.getString(R.string.terminal_auth_ki));
