@@ -45,7 +45,6 @@ import java.util.regex.Pattern;
 
 import org.connectbot.R;
 import org.connectbot.bean.HostBean;
-import org.connectbot.bean.PortForwardBean;
 import org.connectbot.bean.PubkeyBean;
 import org.connectbot.service.TerminalBridge;
 import org.connectbot.service.TerminalManager;
@@ -66,11 +65,9 @@ import com.trilead.ssh2.ChannelCondition;
 import com.trilead.ssh2.Connection;
 import com.trilead.ssh2.ConnectionInfo;
 import com.trilead.ssh2.ConnectionMonitor;
-import com.trilead.ssh2.DynamicPortForwarder;
 import com.trilead.ssh2.ExtendedServerHostKeyVerifier;
 import com.trilead.ssh2.InteractiveCallback;
 import com.trilead.ssh2.KnownHosts;
-import com.trilead.ssh2.LocalPortForwarder;
 import com.trilead.ssh2.Session;
 import com.trilead.ssh2.crypto.PEMDecoder;
 import com.trilead.ssh2.signature.DSASHA1Verify;
@@ -133,8 +130,6 @@ public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveC
 		| ChannelCondition.STDERR_DATA
 		| ChannelCondition.CLOSED
 		| ChannelCondition.EOF;
-
-	private List<PortForwardBean> portForwards = new ArrayList<>();
 
 	private int columns;
 	private int rows;
@@ -400,15 +395,6 @@ public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveC
 	private void finishConnection() {
 		authenticated = true;
 
-		for (PortForwardBean portForward : portForwards) {
-			try {
-				enablePortForward(portForward);
-				bridge.outputLine(manager.res.getString(R.string.terminal_enable_portfoward, portForward.getDescription()));
-			} catch (Exception e) {
-				Log.e(TAG, "Error setting up port forward during connect", e);
-			}
-		}
-
 		if (!host.getWantSession()) {
 			bridge.outputLine(manager.res.getString(R.string.terminal_no_session));
 			bridge.onConnected();
@@ -612,144 +598,7 @@ public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveC
 		onDisconnect();
 	}
 
-	@Override
-	public boolean canForwardPorts() {
-		return true;
-	}
 
-	@Override
-	public List<PortForwardBean> getPortForwards() {
-		return portForwards;
-	}
-
-	@Override
-	public boolean addPortForward(PortForwardBean portForward) {
-		return portForwards.add(portForward);
-	}
-
-	@Override
-	public boolean removePortForward(PortForwardBean portForward) {
-		// Make sure we don't have a phantom forwarder.
-		disablePortForward(portForward);
-
-		return portForwards.remove(portForward);
-	}
-
-	@Override
-	public boolean enablePortForward(PortForwardBean portForward) {
-		if (!portForwards.contains(portForward)) {
-			Log.e(TAG, "Attempt to enable port forward not in list");
-			return false;
-		}
-
-		if (!authenticated)
-			return false;
-
-		if (HostDatabase.PORTFORWARD_LOCAL.equals(portForward.getType())) {
-			LocalPortForwarder lpf = null;
-			try {
-				lpf = connection.createLocalPortForwarder(
-						new InetSocketAddress(InetAddress.getLocalHost(), portForward.getSourcePort()),
-						portForward.getDestAddr(), portForward.getDestPort());
-			} catch (Exception e) {
-				Log.e(TAG, "Could not create local port forward", e);
-				return false;
-			}
-
-			if (lpf == null) {
-				Log.e(TAG, "returned LocalPortForwarder object is null");
-				return false;
-			}
-
-			portForward.setIdentifier(lpf);
-			portForward.setEnabled(true);
-			return true;
-		} else if (HostDatabase.PORTFORWARD_REMOTE.equals(portForward.getType())) {
-			try {
-				connection.requestRemotePortForwarding("", portForward.getSourcePort(), portForward.getDestAddr(), portForward.getDestPort());
-			} catch (Exception e) {
-				Log.e(TAG, "Could not create remote port forward", e);
-				return false;
-			}
-
-			portForward.setEnabled(true);
-			return true;
-		} else if (HostDatabase.PORTFORWARD_DYNAMIC5.equals(portForward.getType())) {
-			DynamicPortForwarder dpf = null;
-
-			try {
-				dpf = connection.createDynamicPortForwarder(
-						new InetSocketAddress(InetAddress.getLocalHost(), portForward.getSourcePort()));
-			} catch (Exception e) {
-				Log.e(TAG, "Could not create dynamic port forward", e);
-				return false;
-			}
-
-			portForward.setIdentifier(dpf);
-			portForward.setEnabled(true);
-			return true;
-		} else {
-			// Unsupported type
-			Log.e(TAG, String.format("attempt to forward unknown type %s", portForward.getType()));
-			return false;
-		}
-	}
-
-	@Override
-	public boolean disablePortForward(PortForwardBean portForward) {
-		if (!portForwards.contains(portForward)) {
-			Log.e(TAG, "Attempt to disable port forward not in list");
-			return false;
-		}
-
-		if (!authenticated)
-			return false;
-
-		if (HostDatabase.PORTFORWARD_LOCAL.equals(portForward.getType())) {
-			LocalPortForwarder lpf = null;
-			lpf = (LocalPortForwarder) portForward.getIdentifier();
-
-			if (!portForward.isEnabled() || lpf == null) {
-				Log.d(TAG, String.format("Could not disable %s; it appears to be not enabled or have no handler", portForward.getNickname()));
-				return false;
-			}
-
-			portForward.setEnabled(false);
-
-			lpf.close();
-
-			return true;
-		} else if (HostDatabase.PORTFORWARD_REMOTE.equals(portForward.getType())) {
-			portForward.setEnabled(false);
-
-			try {
-				connection.cancelRemotePortForwarding(portForward.getSourcePort());
-			} catch (IOException e) {
-				Log.e(TAG, "Could not stop remote port forwarding, setting enabled to false", e);
-				return false;
-			}
-
-			return true;
-		} else if (HostDatabase.PORTFORWARD_DYNAMIC5.equals(portForward.getType())) {
-			DynamicPortForwarder dpf = null;
-			dpf = (DynamicPortForwarder) portForward.getIdentifier();
-
-			if (!portForward.isEnabled() || dpf == null) {
-				Log.d(TAG, String.format("Could not disable %s; it appears to be not enabled or have no handler", portForward.getNickname()));
-				return false;
-			}
-
-			portForward.setEnabled(false);
-
-			dpf.close();
-
-			return true;
-		} else {
-			// Unsupported type
-			Log.e(TAG, String.format("attempt to forward unknown type %s", portForward.getType()));
-			return false;
-		}
-	}
 
 	@Override
 	public void setDimensions(int columns, int rows, int width, int height) {

@@ -18,11 +18,9 @@
 package org.connectbot.transport;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import org.connectbot.bean.HostBean;
-import org.connectbot.bean.PortForwardBean;
 import org.connectbot.service.TerminalBridge;
 import org.connectbot.service.TerminalManager;
 
@@ -155,60 +153,6 @@ public abstract class AbsTransport {
 
 	public void setManager(TerminalManager manager) {
 		this.manager = manager;
-	}
-
-	/**
-	 * Whether or not this transport type can forward ports.
-	 * @return true on ability to forward ports
-	 */
-	public boolean canForwardPorts() {
-		return false;
-	}
-
-	/**
-	 * Adds the {@link PortForwardBean} to the list.
-	 * @param portForward the port forward bean to add
-	 * @return true on successful addition
-	 */
-	public boolean addPortForward(PortForwardBean portForward) {
-		return false;
-	}
-
-	/**
-	 * Enables a port forward member. After calling this method, the port forward should
-	 * be operational iff it could be enabled by the transport.
-	 * @param portForward member of our current port forwards list to enable
-	 * @return true on successful port forward setup
-	 */
-	public boolean enablePortForward(PortForwardBean portForward) {
-		return false;
-	}
-
-	/**
-	 * Disables a port forward member. After calling this method, the port forward should
-	 * be non-functioning iff it could be disabled by the transport.
-	 * @param portForward member of our current port forwards list to enable
-	 * @return true on successful port forward tear-down
-	 */
-	public boolean disablePortForward(PortForwardBean portForward) {
-		return false;
-	}
-
-	/**
-	 * Removes the {@link PortForwardBean} from the available port forwards.
-	 * @param portForward the port forward bean to remove
-	 * @return true on successful removal
-	 */
-	public boolean removePortForward(PortForwardBean portForward) {
-		return false;
-	}
-
-	/**
-	 * Gets a list of the {@link PortForwardBean} currently used by this transport.
-	 * @return the list of port forwards
-	 */
-	public List<PortForwardBean> getPortForwards() {
-		return null;
 	}
 
 	public abstract boolean isConnected();

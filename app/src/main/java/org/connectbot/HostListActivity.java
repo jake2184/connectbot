@@ -459,19 +459,6 @@ public class HostListActivity extends AppCompatListActivity implements OnHostSta
 				}
 			});
 
-			MenuItem portForwards = menu.add(R.string.list_host_portforwards);
-			portForwards.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-				@Override
-				public boolean onMenuItemClick(MenuItem item) {
-					Intent intent = new Intent(HostListActivity.this, PortForwardListActivity.class);
-					intent.putExtra(Intent.EXTRA_TITLE, host.getId());
-					HostListActivity.this.startActivityForResult(intent, REQUEST_EDIT);
-					return true;
-				}
-			});
-			if (!TransportFactory.canForwardPorts(host.getProtocol()))
-				portForwards.setEnabled(false);
-
 			MenuItem delete = menu.add(R.string.list_host_delete);
 			delete.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 				@Override

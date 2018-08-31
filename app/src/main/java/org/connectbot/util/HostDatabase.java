@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.connectbot.bean.HostBean;
-import org.connectbot.bean.PortForwardBean;
 import org.connectbot.data.ColorStorage;
 import org.connectbot.data.HostStorage;
 
@@ -79,14 +78,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 	public final static String FIELD_KNOWNHOSTS_HOSTKEYALGO = "hostkeyalgo";
 	public final static String FIELD_KNOWNHOSTS_HOSTKEY = "hostkey";
 
-	public final static String TABLE_PORTFORWARDS = "portforwards";
-	public final static String FIELD_PORTFORWARD_HOSTID = "hostid";
-	public final static String FIELD_PORTFORWARD_NICKNAME = "nickname";
-	public final static String FIELD_PORTFORWARD_TYPE = "type";
-	public final static String FIELD_PORTFORWARD_SOURCEPORT = "sourceport";
-	public final static String FIELD_PORTFORWARD_DESTADDR = "destaddr";
-	public final static String FIELD_PORTFORWARD_DESTPORT = "destport";
-
 	public final static String TABLE_COLORS = "colors";
 	public final static String FIELD_COLOR_SCHEME = "scheme";
 	public final static String FIELD_COLOR_NUMBER = "number";
@@ -103,11 +94,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 	public final static String COLOR_GREEN = "green";
 	public final static String COLOR_BLUE = "blue";
 	public final static String COLOR_GRAY = "gray";
-
-	public final static String PORTFORWARD_LOCAL = "local";
-	public final static String PORTFORWARD_REMOTE = "remote";
-	public final static String PORTFORWARD_DYNAMIC4 = "dynamic4";
-	public final static String PORTFORWARD_DYNAMIC5 = "dynamic5";
 
 	public final static String DELKEY_DEL = "del";
 	public final static String DELKEY_BACKSPACE = "backspace";
@@ -164,8 +150,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 		addTableName(TABLE_HOSTS);
 		addTableName(TABLE_KNOWNHOSTS);
 		addIndexName(TABLE_KNOWNHOSTS + FIELD_KNOWNHOSTS_HOSTID + "index");
-		addTableName(TABLE_PORTFORWARDS);
-		addIndexName(TABLE_PORTFORWARDS + FIELD_PORTFORWARD_HOSTID + "index");
 		addTableName(TABLE_COLORS);
 		addIndexName(TABLE_COLORS + FIELD_COLOR_SCHEME + "index");
 		addTableName(TABLE_COLOR_DEFAULTS);
@@ -222,18 +206,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 		db.execSQL("CREATE INDEX " + TABLE_KNOWNHOSTS + FIELD_KNOWNHOSTS_HOSTID + "index ON "
 				+ TABLE_KNOWNHOSTS + " (" + FIELD_KNOWNHOSTS_HOSTID + ");");
 
-		db.execSQL("CREATE TABLE " + TABLE_PORTFORWARDS
-				+ " (_id INTEGER PRIMARY KEY, "
-				+ FIELD_PORTFORWARD_HOSTID + " INTEGER, "
-				+ FIELD_PORTFORWARD_NICKNAME + " TEXT, "
-				+ FIELD_PORTFORWARD_TYPE + " TEXT NOT NULL DEFAULT '" + PORTFORWARD_LOCAL + "', "
-				+ FIELD_PORTFORWARD_SOURCEPORT + " INTEGER NOT NULL DEFAULT 8080, "
-				+ FIELD_PORTFORWARD_DESTADDR + " TEXT, "
-				+ FIELD_PORTFORWARD_DESTPORT + " TEXT)");
-
-		db.execSQL("CREATE INDEX " + TABLE_PORTFORWARDS + FIELD_PORTFORWARD_HOSTID + "index ON "
-				+ TABLE_PORTFORWARDS + " (" + FIELD_PORTFORWARD_HOSTID + ");");
-
 		db.execSQL("CREATE TABLE " + TABLE_COLORS
 				+ " (_id INTEGER PRIMARY KEY, "
 				+ FIELD_COLOR_NUMBER + " INTEGER, "
@@ -255,7 +227,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 
 			mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_HOSTS);
 			mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_KNOWNHOSTS);
-			mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_PORTFORWARDS);
 			mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_COLORS);
 			mDb.execSQL("DROP TABLE IF EXISTS " + TABLE_COLOR_DEFAULTS);
 
@@ -287,16 +258,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 			db.execSQL("ALTER TABLE " + TABLE_HOSTS
 					+ " ADD COLUMN " + FIELD_HOST_PUBKEYID + " INTEGER DEFAULT " + PUBKEYID_ANY);
 			// fall through
-		case 11:
-			db.execSQL("CREATE TABLE " + TABLE_PORTFORWARDS
-					+ " (_id INTEGER PRIMARY KEY, "
-					+ FIELD_PORTFORWARD_HOSTID + " INTEGER, "
-					+ FIELD_PORTFORWARD_NICKNAME + " TEXT, "
-					+ FIELD_PORTFORWARD_TYPE + " TEXT NOT NULL DEFAULT '" + PORTFORWARD_LOCAL + "', "
-					+ FIELD_PORTFORWARD_SOURCEPORT + " INTEGER NOT NULL DEFAULT 8080, "
-					+ FIELD_PORTFORWARD_DESTADDR + " TEXT, "
-					+ FIELD_PORTFORWARD_DESTPORT + " INTEGER)");
-			// fall through
 		case 12:
 			db.execSQL("ALTER TABLE " + TABLE_HOSTS
 					+ " ADD COLUMN " + FIELD_HOST_WANTSESSION + " TEXT DEFAULT '" + Boolean.toString(true) + "'");
@@ -318,9 +279,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 					+ " ADD COLUMN " + FIELD_HOST_DELKEY + " TEXT DEFAULT '" + DELKEY_DEL + "'");
 			// fall through
 		case 17:
-			db.execSQL("CREATE INDEX " + TABLE_PORTFORWARDS + FIELD_PORTFORWARD_HOSTID + "index ON "
-					+ TABLE_PORTFORWARDS + " (" + FIELD_PORTFORWARD_HOSTID + ");");
-
 			// Add colors
 			db.execSQL("CREATE TABLE " + TABLE_COLORS
 					+ " (_id INTEGER PRIMARY KEY, "
@@ -745,90 +703,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 		}
 
 		Log.d(TAG, String.format("Set all hosts using pubkey id %d to -1", pubkeyId));
-	}
-
-	/*
-	 * Methods for dealing with port forwards attached to hosts
-	 */
-
-	/**
-	 * Returns a list of all the port forwards associated with a particular host ID.
-	 * @param host the host for which we want the port forward list
-	 * @return port forwards associated with host ID or empty list if no match
-	 */
-	@Override
-	public List<PortForwardBean> getPortForwardsForHost(HostBean host) {
-		List<PortForwardBean> portForwards = new ArrayList<>();
-		if (host == null) {
-			return portForwards;
-		}
-
-		Cursor c = mDb.query(TABLE_PORTFORWARDS, new String[] {
-						"_id", FIELD_PORTFORWARD_NICKNAME, FIELD_PORTFORWARD_TYPE, FIELD_PORTFORWARD_SOURCEPORT,
-						FIELD_PORTFORWARD_DESTADDR, FIELD_PORTFORWARD_DESTPORT},
-				FIELD_PORTFORWARD_HOSTID + " = ?", new String[] {String.valueOf(host.getId())},
-				null, null, null);
-
-		while (c.moveToNext()) {
-			PortForwardBean pfb = new PortForwardBean(
-					c.getInt(0),
-					host.getId(),
-					c.getString(1),
-					c.getString(2),
-					c.getInt(3),
-					c.getString(4),
-					c.getInt(5));
-			portForwards.add(pfb);
-		}
-
-		c.close();
-
-		return portForwards;
-	}
-
-	/**
-	 * Update the parameters of a port forward in the database.
-	 * @param pfb {@link PortForwardBean} to save
-	 * @return true on success
-	 */
-	public boolean savePortForward(PortForwardBean pfb) {
-		mDb.beginTransaction();
-		try {
-			if (pfb.getId() < 0) {
-				long addedId = mDb.insert(TABLE_PORTFORWARDS, null, pfb.getValues());
-				if (addedId == -1) {
-					return false;
-				}
-				pfb.setId(addedId);
-			} else {
-				if (mDb.update(TABLE_PORTFORWARDS, pfb.getValues(), "_id = ?", new String[] {String.valueOf(pfb.getId())}) <= 0) {
-					return false;
-				}
-			}
-
-			mDb.setTransactionSuccessful();
-			return true;
-		} finally {
-			mDb.endTransaction();
-		}
-	}
-
-	/**
-	 * Deletes a port forward from the database.
-	 * @param pfb {@link PortForwardBean} to delete
-	 */
-	public void deletePortForward(PortForwardBean pfb) {
-		if (pfb.getId() < 0) {
-			return;
-		}
-
-		mDb.beginTransaction();
-		try {
-			mDb.delete(TABLE_PORTFORWARDS, "_id = ?", new String[] {String.valueOf(pfb.getId())});
-			mDb.setTransactionSuccessful();
-		} finally {
-			mDb.endTransaction();
-		}
 	}
 
 	@Override

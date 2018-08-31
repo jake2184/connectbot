@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 import org.connectbot.R;
 import org.connectbot.TerminalView;
 import org.connectbot.bean.HostBean;
-import org.connectbot.bean.PortForwardBean;
 import org.connectbot.bean.SelectionArea;
 import org.connectbot.transport.AbsTransport;
 import org.connectbot.transport.TransportFactory;
@@ -277,11 +276,6 @@ public class TerminalBridge implements VDUDisplay {
 		transport.setCompression(host.getCompression());
 		transport.setUseAuthAgent(host.getUseAuthAgent());
 		transport.setEmulation(emulation);
-
-		if (transport.canForwardPorts()) {
-			for (PortForwardBean portForward : manager.hostdb.getPortForwardsForHost(host))
-				transport.addPortForward(portForward);
-		}
 
 		outputLine(manager.res.getString(R.string.terminal_connecting, host.getHostname(), host.getPort(), host.getProtocol()));
 
@@ -889,67 +883,6 @@ public class TerminalBridge implements VDUDisplay {
 		}
 	}
 
-	/**
-	 * @return whether underlying transport can forward ports
-	 */
-	public boolean canFowardPorts() {
-		return transport.canForwardPorts();
-	}
-
-	/**
-	 * Adds the {@link PortForwardBean} to the list.
-	 * @param portForward the port forward bean to add
-	 * @return true on successful addition
-	 */
-	public boolean addPortForward(PortForwardBean portForward) {
-		return transport.addPortForward(portForward);
-	}
-
-	/**
-	 * Removes the {@link PortForwardBean} from the list.
-	 * @param portForward the port forward bean to remove
-	 * @return true on successful removal
-	 */
-	public boolean removePortForward(PortForwardBean portForward) {
-		return transport.removePortForward(portForward);
-	}
-
-	/**
-	 * @return the list of port forwards
-	 */
-	public List<PortForwardBean> getPortForwards() {
-		return transport.getPortForwards();
-	}
-
-	/**
-	 * Enables a port forward member. After calling this method, the port forward should
-	 * be operational.
-	 * @param portForward member of our current port forwards list to enable
-	 * @return true on successful port forward setup
-	 */
-	public boolean enablePortForward(PortForwardBean portForward) {
-		if (!transport.isConnected()) {
-			Log.i(TAG, "Attempt to enable port forward while not connected");
-			return false;
-		}
-
-		return transport.enablePortForward(portForward);
-	}
-
-	/**
-	 * Disables a port forward member. After calling this method, the port forward should
-	 * be non-functioning.
-	 * @param portForward member of our current port forwards list to enable
-	 * @return true on successful port forward tear-down
-	 */
-	public boolean disablePortForward(PortForwardBean portForward) {
-		if (!transport.isConnected()) {
-			Log.i(TAG, "Attempt to disable port forward while not connected");
-			return false;
-		}
-
-		return transport.disablePortForward(portForward);
-	}
 
 	/**
 	 * @return whether the TerminalBridge should close

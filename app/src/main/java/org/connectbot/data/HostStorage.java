@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.connectbot.bean.HostBean;
-import org.connectbot.bean.PortForwardBean;
 
 import com.trilead.ssh2.KnownHosts;
 
@@ -92,8 +91,4 @@ public interface HostStorage {
 	 */
 	void removeKnownHost(String host, int port, String serverHostKeyAlgorithm, byte[] serverHostKey);
 
-	/**
-	 * Return all port forwards for the given {@code host}.
-	 */
-	List<PortForwardBean> getPortForwardsForHost(HostBean host);
 }

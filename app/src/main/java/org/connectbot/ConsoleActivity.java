@@ -135,7 +135,7 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 
 	private Animation keyboard_fade_in, keyboard_fade_out;
 
-	private MenuItem disconnect, copy, paste, portForward, resize, urlscan;
+	private MenuItem disconnect, copy, paste, resize, urlscan;
 
 	private boolean forcedOrientation;
 
@@ -816,13 +816,11 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 		final boolean activeTerminal = view != null;
 		boolean sessionOpen = false;
 		boolean disconnected = false;
-		boolean canForwardPorts = false;
 
 		if (activeTerminal) {
 			TerminalBridge bridge = view.bridge;
 			sessionOpen = bridge.isSessionOpen();
 			disconnected = bridge.isDisconnected();
-			canForwardPorts = bridge.canFowardPorts();
 		}
 
 		menu.setQwertyMode(true);
@@ -856,24 +854,6 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				pasteIntoTerminal();
-				return true;
-			}
-		});
-
-		portForward = menu.add(R.string.console_menu_portforwards);
-		if (hardKeyboard)
-			portForward.setAlphabeticShortcut('f');
-		portForward.setIcon(android.R.drawable.ic_menu_manage);
-		portForward.setEnabled(sessionOpen && canForwardPorts);
-		portForward.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				TerminalView terminalView = adapter.getCurrentTerminalView();
-				TerminalBridge bridge = terminalView.bridge;
-
-				Intent intent = new Intent(ConsoleActivity.this, PortForwardListActivity.class);
-				intent.putExtra(Intent.EXTRA_TITLE, bridge.host.getId());
-				ConsoleActivity.this.startActivityForResult(intent, REQUEST_EDIT);
 				return true;
 			}
 		});
@@ -958,13 +938,11 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 		boolean activeTerminal = view != null;
 		boolean sessionOpen = false;
 		boolean disconnected = false;
-		boolean canForwardPorts = false;
 
 		if (activeTerminal) {
 			TerminalBridge bridge = view.bridge;
 			sessionOpen = bridge.isSessionOpen();
 			disconnected = bridge.isDisconnected();
-			canForwardPorts = bridge.canFowardPorts();
 		}
 
 		disconnect.setEnabled(activeTerminal);
@@ -974,7 +952,6 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 			disconnect.setTitle(R.string.console_menu_close);
 
 		paste.setEnabled(activeTerminal);
-		portForward.setEnabled(sessionOpen && canForwardPorts);
 		urlscan.setEnabled(activeTerminal);
 		resize.setEnabled(sessionOpen);
 
