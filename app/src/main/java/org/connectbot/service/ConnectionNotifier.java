@@ -54,10 +54,7 @@ public abstract class ConnectionNotifier {
 	NotificationChannel nc;
 
 	public static ConnectionNotifier getInstance() {
-		if (PreferenceConstants.PRE_ECLAIR)
-			return PreEclair.Holder.sInstance;
-		else
-			return EclairAndBeyond.Holder.sInstance;
+		return EclairAndBeyond.Holder.sInstance;
 	}
 
 	protected NotificationManager getNotificationManager(Context context) {

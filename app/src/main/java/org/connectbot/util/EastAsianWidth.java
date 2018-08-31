@@ -27,10 +27,7 @@ import android.text.AndroidCharacter;
  */
 public abstract class EastAsianWidth {
 	public static EastAsianWidth getInstance() {
-		if (PreferenceConstants.PRE_FROYO)
-			return PreFroyo.Holder.sInstance;
-		else
-			return FroyoAndBeyond.Holder.sInstance;
+		return FroyoAndBeyond.Holder.sInstance;
 	}
 
 	/**

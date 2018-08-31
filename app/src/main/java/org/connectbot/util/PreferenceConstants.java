@@ -17,8 +17,6 @@
 
 package org.connectbot.util;
 
-import android.os.Build;
-
 /**
  * @author Kenny Root
  *
@@ -27,19 +25,12 @@ public final class PreferenceConstants {
 	private PreferenceConstants() {
 	}
 
-	public static final boolean PRE_ECLAIR = Build.VERSION.SDK_INT < 5;
-	public static final boolean PRE_FROYO = Build.VERSION.SDK_INT < 8;
-
-	public static final String MEMKEYS = "memkeys";
 
 	public static final String SCROLLBACK = "scrollback";
 
 	public static final String EMULATION = "emulation";
 
 	public static final String ROTATION = "rotation";
-
-	public static final String BACKUP_KEYS = "backupkeys";
-	public static final boolean BACKUP_KEYS_DEFAULT = false;
 
 	public static final String ROTATION_DEFAULT = "Default";
 	public static final String ROTATION_LANDSCAPE = "Force landscape";
@@ -87,6 +78,4 @@ public final class PreferenceConstants {
 	public static final String NO = "no";
 	public static final String ALT = "alt";
 
-	/* Backup identifiers */
-	public static final String BACKUP_PREF_KEY = "prefs";
 }

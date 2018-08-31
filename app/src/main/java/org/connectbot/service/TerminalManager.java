@@ -135,10 +135,6 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 		ProviderLoader.load(this, this);
 	}
 
-	private void updateSavingKeys() {
-		savingKeys = prefs.getBoolean(PreferenceConstants.MEMKEYS, true);
-	}
-
 	@Override
 	public void onDestroy() {
 		Log.i(TAG, "Destroying service");
@@ -511,8 +507,6 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 		} else if (PreferenceConstants.WIFI_LOCK.equals(key)) {
 			final boolean lockingWifi = prefs.getBoolean(PreferenceConstants.WIFI_LOCK, true);
 			connectivityManager.setWantWifiLock(lockingWifi);
-		} else if (PreferenceConstants.MEMKEYS.equals(key)) {
-			updateSavingKeys();
 		}
 	}
 

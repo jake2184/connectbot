@@ -38,8 +38,6 @@
 		android:xlargeScreens="true" />
 
 	<application
-		android:allowBackup="true"
-		android:backupAgent=".service.BackupAgent"
 		android:description="@string/app_desc"
 		android:icon="@drawable/icon"
 		android:killAfterRestore="true"
@@ -157,10 +155,6 @@
 				<!-- format:  local://  -->
 			</intent-filter>
 		</activity>
-
-		<meta-data
-			android:name="com.google.android.backup.api_key"
-			android:value="AEdPqrEAAAAIDlFz9nSUr2g0gSytW0t2cNnYAGHDkptlVohsBA"/>
 
 	</application>
 </manifest>

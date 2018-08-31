@@ -41,13 +41,6 @@
 		android:defaultValue="true"
 		/>
 
-	<SwitchPreferenceCompat
-		android:key="backupkeys"
-		android:title="@string/pref_backupkeys_title"
-		android:summary="@string/pref_backupkeys_summary"
-		android:defaultValue="false"
-		/>
-
 	<PreferenceCategory
 		android:title="@string/pref_emulation_category">
 
