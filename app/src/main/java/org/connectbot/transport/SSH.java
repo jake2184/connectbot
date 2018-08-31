@@ -109,7 +109,6 @@ public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveC
 	private int width;
 	private int height;
 
-	private String useAuthAgent = HostDatabase.AUTHAGENT_NO;
 	private String agentLockPassphrase;
 
 	public class HostKeyVerifier extends ExtendedServerHostKeyVerifier {

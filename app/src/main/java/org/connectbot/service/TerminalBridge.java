@@ -274,7 +274,6 @@ public class TerminalBridge implements VDUDisplay {
 
 		// TODO make this more abstract so we don't litter on AbsTransport
 		transport.setCompression(host.getCompression());
-		transport.setUseAuthAgent(host.getUseAuthAgent());
 		transport.setEmulation(emulation);
 
 		outputLine(manager.res.getString(R.string.terminal_connecting, host.getHostname(), host.getPort(), host.getProtocol()));

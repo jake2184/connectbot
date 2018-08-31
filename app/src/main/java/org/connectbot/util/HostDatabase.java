@@ -61,8 +61,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 	public final static String FIELD_HOST_PORT = "port";
 	public final static String FIELD_HOST_LASTCONNECT = "lastconnect";
 	public final static String FIELD_HOST_COLOR = "color";
-	public final static String FIELD_HOST_USEKEYS = "usekeys";
-	public final static String FIELD_HOST_USEAUTHAGENT = "useauthagent";
 	public final static String FIELD_HOST_POSTLOGIN = "postlogin";
 	public final static String FIELD_HOST_WANTSESSION = "wantsession";
 	public final static String FIELD_HOST_DELKEY = "delkey";
@@ -97,10 +95,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 	public final static String DELKEY_DEL = "del";
 	public final static String DELKEY_BACKSPACE = "backspace";
 
-	public final static String AUTHAGENT_NO = "no";
-	public final static String AUTHAGENT_CONFIRM = "confirm";
-	public final static String AUTHAGENT_YES = "yes";
-
 	public final static String ENCODING_DEFAULT = Charset.defaultCharset().name();
 
 
@@ -115,8 +109,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 			+ FIELD_HOST_PORT + " INTEGER, "
 			+ FIELD_HOST_LASTCONNECT + " INTEGER, "
 			+ FIELD_HOST_COLOR + " TEXT, "
-			+ FIELD_HOST_USEKEYS + " TEXT, "
-			+ FIELD_HOST_USEAUTHAGENT + " TEXT, "
 			+ FIELD_HOST_POSTLOGIN + " TEXT, "
 			+ FIELD_HOST_DELKEY + " TEXT DEFAULT '" + DELKEY_DEL + "', "
 			+ FIELD_HOST_FONTSIZE + " INTEGER, "
@@ -280,10 +272,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 			db.execSQL("CREATE INDEX " + TABLE_COLORS + FIELD_COLOR_SCHEME + "index ON "
 					+ TABLE_COLORS + " (" + FIELD_COLOR_SCHEME + ");");
 			// fall through
-		case 18:
-			db.execSQL("ALTER TABLE " + TABLE_HOSTS
-					+ " ADD COLUMN " + FIELD_HOST_USEAUTHAGENT + " TEXT DEFAULT '" + AUTHAGENT_NO + "'");
-			// fall through
 		case 19:
 			db.execSQL("ALTER TABLE " + TABLE_HOSTS
 					+ " ADD COLUMN " + FIELD_HOST_STAYCONNECTED + " TEXT");
@@ -332,8 +320,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 					+ FIELD_HOST_PORT + ", "
 					+ FIELD_HOST_LASTCONNECT + ", "
 					+ FIELD_HOST_COLOR + ", "
-					+ FIELD_HOST_USEKEYS + ", "
-					+ FIELD_HOST_USEAUTHAGENT + ", "
 					+ FIELD_HOST_POSTLOGIN + ", "
 					+ FIELD_HOST_DELKEY + ", "
 					+ FIELD_HOST_FONTSIZE + ", "
@@ -444,8 +430,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 			COL_PORT = c.getColumnIndexOrThrow(FIELD_HOST_PORT),
 			COL_LASTCONNECT = c.getColumnIndexOrThrow(FIELD_HOST_LASTCONNECT),
 			COL_COLOR = c.getColumnIndexOrThrow(FIELD_HOST_COLOR),
-			COL_USEKEYS = c.getColumnIndexOrThrow(FIELD_HOST_USEKEYS),
-			COL_USEAUTHAGENT = c.getColumnIndexOrThrow(FIELD_HOST_USEAUTHAGENT),
 			COL_POSTLOGIN = c.getColumnIndexOrThrow(FIELD_HOST_POSTLOGIN),
 			COL_WANTSESSION = c.getColumnIndexOrThrow(FIELD_HOST_WANTSESSION),
 			COL_DELKEY = c.getColumnIndexOrThrow(FIELD_HOST_DELKEY),
@@ -466,8 +450,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 			host.setPort(c.getInt(COL_PORT));
 			host.setLastConnect(c.getLong(COL_LASTCONNECT));
 			host.setColor(c.getString(COL_COLOR));
-			host.setUseKeys(Boolean.valueOf(c.getString(COL_USEKEYS)));
-			host.setUseAuthAgent(c.getString(COL_USEAUTHAGENT));
 			host.setPostLogin(c.getString(COL_POSTLOGIN));
 			host.setWantSession(Boolean.valueOf(c.getString(COL_WANTSESSION)));
 			host.setDelKey(c.getString(COL_DELKEY));

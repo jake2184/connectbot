@@ -381,22 +381,6 @@
 		</RelativeLayout>
 
 		<org.connectbot.views.CheckableMenuItem
-			android:id="@+id/use_ssh_auth_item"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:icon="@drawable/ic_vpn_lock"
-			android:title="@string/hostpref_authagent_title"
-			/>
-
-		<org.connectbot.views.CheckableMenuItem
-			android:id="@+id/ssh_auth_confirmation_item"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:title="@string/hostpref_authagent_with_confirmation"
-			android:visibility="gone"
-			/>
-
-		<org.connectbot.views.CheckableMenuItem
 			android:id="@+id/compression_item"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"

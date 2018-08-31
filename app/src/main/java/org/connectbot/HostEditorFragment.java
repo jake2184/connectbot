@@ -367,25 +367,6 @@ public class HostEditorFragment extends Fragment {
 		// available when this fragment is created.
 		mEncodingText = view.findViewById(R.id.encoding_text);
 
-		mUseSshAuthSwitch = view.findViewById(R.id.use_ssh_auth_item);
-		mUseSshAuthSwitch.setChecked(!mHost.getUseAuthAgent().equals(HostDatabase.AUTHAGENT_NO));
-		mUseSshAuthSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				processSshAuthChange();
-			}
-		});
-
-		mUseSshConfirmationSwitch = view.findViewById(R.id.ssh_auth_confirmation_item);
-		mUseSshConfirmationSwitch.setChecked(mHost.getUseAuthAgent().equals(HostDatabase.AUTHAGENT_CONFIRM));
-		mUseSshConfirmationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				processSshAuthChange();
-			}
-		});
-
-		processSshAuthChange();
 
 		mCompressionSwitch = view.findViewById(R.id.compression_item);
 		mCompressionSwitch.setChecked(mHost.getCompression());
@@ -498,23 +479,6 @@ public class HostEditorFragment extends Fragment {
 			mFontSizeText.removeTextChangedListener(mFontSizeTextChangeListener);
 			mFontSizeText.setText(Integer.toString(fontSize));
 			mFontSizeText.addTextChangedListener(mFontSizeTextChangeListener);
-		}
-
-		handleHostChange();
-	}
-
-	private void processSshAuthChange() {
-		mUseSshConfirmationSwitch.setVisibility(
-				mUseSshAuthSwitch.isChecked() ? View.VISIBLE : View.GONE);
-
-		if (mUseSshAuthSwitch.isChecked()) {
-			//noinspection ResourceType
-			mHost.setUseAuthAgent(
-					mUseSshConfirmationSwitch.isChecked() ?
-									HostDatabase.AUTHAGENT_CONFIRM :
-									HostDatabase.AUTHAGENT_YES);
-		} else {
-			mHost.setUseAuthAgent(HostDatabase.AUTHAGENT_NO);
 		}
 
 		handleHostChange();

@@ -45,8 +45,6 @@ public class HostBean extends AbstractBean {
 	private String protocol = "ssh";
 	private long lastConnect = -1;
 	private String color;
-	private boolean useKeys = true;
-	private String useAuthAgent = HostDatabase.AUTHAGENT_NO;
 	private String postLogin = null;
 	private boolean wantSession = true;
 	private String delKey = HostDatabase.DELKEY_DEL;
@@ -124,18 +122,6 @@ public class HostBean extends AbstractBean {
 	public String getColor() {
 		return color;
 	}
-	public void setUseKeys(boolean useKeys) {
-		this.useKeys = useKeys;
-	}
-	public boolean getUseKeys() {
-		return useKeys;
-	}
-	public void setUseAuthAgent(String useAuthAgent) {
-		this.useAuthAgent = useAuthAgent;
-	}
-	public String getUseAuthAgent() {
-		return useAuthAgent;
-	}
 	public void setPostLogin(String postLogin) {
 		this.postLogin = postLogin;
 	}
@@ -212,8 +198,6 @@ public class HostBean extends AbstractBean {
 		values.put(HostDatabase.FIELD_HOST_PORT, port);
 		values.put(HostDatabase.FIELD_HOST_LASTCONNECT, lastConnect);
 		values.put(HostDatabase.FIELD_HOST_COLOR, color);
-		values.put(HostDatabase.FIELD_HOST_USEKEYS, Boolean.toString(useKeys));
-		values.put(HostDatabase.FIELD_HOST_USEAUTHAGENT, useAuthAgent);
 		values.put(HostDatabase.FIELD_HOST_POSTLOGIN, postLogin);
 		values.put(HostDatabase.FIELD_HOST_WANTSESSION, Boolean.toString(wantSession));
 		values.put(HostDatabase.FIELD_HOST_DELKEY, delKey);
@@ -235,8 +219,6 @@ public class HostBean extends AbstractBean {
 		host.setPort(values.getAsInteger(HostDatabase.FIELD_HOST_PORT));
 		host.setLastConnect(values.getAsLong(HostDatabase.FIELD_HOST_LASTCONNECT));
 		host.setColor(values.getAsString(HostDatabase.FIELD_HOST_COLOR));
-		host.setUseKeys(Boolean.valueOf(values.getAsString(HostDatabase.FIELD_HOST_USEKEYS)));
-		host.setUseAuthAgent(values.getAsString(HostDatabase.FIELD_HOST_USEAUTHAGENT));
 		host.setPostLogin(values.getAsString(HostDatabase.FIELD_HOST_POSTLOGIN));
 		host.setWantSession(Boolean.valueOf(values.getAsString(HostDatabase.FIELD_HOST_WANTSESSION)));
 		host.setDelKey(values.getAsString(HostDatabase.FIELD_HOST_DELKEY));
