@@ -137,7 +137,7 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 
 	private Animation keyboard_fade_in, keyboard_fade_out;
 
-	private MenuItem disconnect, copy, paste, resize, urlscan;
+	private MenuItem disconnect, resize, urlscan;
 
 	private boolean forcedOrientation;
 
@@ -846,19 +846,6 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 			}
 		});
 
-		paste = menu.add(R.string.console_menu_paste);
-		if (hardKeyboard)
-			paste.setAlphabeticShortcut('v');
-		MenuItemCompat.setShowAsAction(paste, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-		paste.setIcon(R.drawable.ic_action_paste);
-		paste.setEnabled(activeTerminal);
-		paste.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				pasteIntoTerminal();
-				return true;
-			}
-		});
 
 		urlscan = menu.add(R.string.console_menu_urlscan);
 		if (hardKeyboard)
@@ -953,7 +940,6 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 		else
 			disconnect.setTitle(R.string.console_menu_close);
 
-		paste.setEnabled(activeTerminal);
 		urlscan.setEnabled(activeTerminal);
 		resize.setEnabled(sessionOpen);
 
@@ -1222,19 +1208,6 @@ public class ConsoleActivity extends AppCompatActivity implements BridgeDisconne
 		// set activity title
 		setTitle(adapter.getPageTitle(requestedIndex));
 		onTerminalChanged();
-	}
-
-	private void pasteIntoTerminal() {
-		// force insert of clipboard text into current console
-		TerminalView terminalView = adapter.getCurrentTerminalView();
-		TerminalBridge bridge = terminalView.bridge;
-
-		// pull string from clipboard and generate all events to force down
-		String clip = "";
-		if (clipboard.hasText()) {
-			clip = clipboard.getText().toString();
-		}
-		bridge.injectString(clip);
 	}
 
 	public class TerminalPagerAdapter extends PagerAdapter {
