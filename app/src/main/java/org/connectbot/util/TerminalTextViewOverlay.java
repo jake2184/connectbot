@@ -256,9 +256,7 @@ public class TerminalTextViewOverlay extends android.support.v7.widget.AppCompat
 
 				// Begin "selection mode"
 
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-					closeSelectionActionMode();
-				}
+				closeSelectionActionMode();
 			} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 				// In the middle of selection.
 

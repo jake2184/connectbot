@@ -82,10 +82,6 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 	private GestureDetector gestureDetector;
 	private SharedPreferences prefs;
 
-	// These are only used for pre-Honeycomb copying.
-	private int lastTouchedRow, lastTouchedCol;
-	private final ClipboardManager clipboard;
-
 	private final Paint paint;
 	private final Paint cursorPaint;
 	private final Paint cursorStrokePaint;
@@ -199,17 +195,15 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 		// connect our view up to the bridge
 		setOnKeyListener(bridge.getKeyHandler());
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			terminalTextViewOverlay = new TerminalTextViewOverlay(context, this);
-			terminalTextViewOverlay.setLayoutParams(
-					new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-			addView(terminalTextViewOverlay, 0);
+		terminalTextViewOverlay = new TerminalTextViewOverlay(context, this);
+		terminalTextViewOverlay.setLayoutParams(
+				new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		addView(terminalTextViewOverlay, 0);
 
-			// Once terminalTextViewOverlay is active, allow it to handle key events instead.
-			terminalTextViewOverlay.setOnKeyListener(bridge.getKeyHandler());
-		}
+		// Once terminalTextViewOverlay is active, allow it to handle key events instead.
+		terminalTextViewOverlay.setOnKeyListener(bridge.getKeyHandler());
 
-		clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
 		bridge.addFontSizeChangedListener(this);
@@ -292,93 +286,7 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 			return true;
 		}
 
-		// Old version of copying, only for pre-Honeycomb.
-		if (terminalTextViewOverlay == null) {
-			// when copying, highlight the area
-			if (bridge.isSelectingForCopy()) {
-				SelectionArea area = bridge.getSelectionArea();
-				int row = (int) Math.floor(event.getY() / bridge.charHeight);
-				int col = (int) Math.floor(event.getX() / bridge.charWidth);
-
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					// recording starting area
-					viewPager.setPagingEnabled(false);
-					if (area.isSelectingOrigin()) {
-						area.setRow(row);
-						area.setColumn(col);
-						lastTouchedRow = row;
-						lastTouchedCol = col;
-						bridge.redraw();
-					}
-					return true;
-				case MotionEvent.ACTION_MOVE:
-							/* ignore when user hasn't moved since last time so
-							 * we can fine-tune with directional pad
-							 */
-					if (row == lastTouchedRow && col == lastTouchedCol)
-						return true;
-
-					// if the user moves, start the selection for other corner
-					area.finishSelectingOrigin();
-
-					// update selected area
-					area.setRow(row);
-					area.setColumn(col);
-					lastTouchedRow = row;
-					lastTouchedCol = col;
-					bridge.redraw();
-					return true;
-				case MotionEvent.ACTION_UP:
-							/* If they didn't move their finger, maybe they meant to
-							 * select the rest of the text with the directional pad.
-							 */
-					if (area.getLeft() == area.getRight() &&
-							area.getTop() == area.getBottom()) {
-						return true;
-					}
-
-					// copy selected area to clipboard
-					String copiedText = area.copyFrom(bridge.buffer);
-
-					clipboard.setText(copiedText);
-					Toast.makeText(
-							context,
-							context.getResources().getQuantityString(R.plurals.console_copy_done,
-									copiedText.length(), copiedText.length()),
-							Toast.LENGTH_LONG).show();
-
-					// fall through to clear state
-
-				case MotionEvent.ACTION_CANCEL:
-					// make sure we clear any highlighted area
-					area.reset();
-					bridge.setSelectingForCopy(false);
-					bridge.redraw();
-					viewPager.setPagingEnabled(true);
-					return true;
-				}
-			}
-
-			return true;
-		}
-
 		return super.onTouchEvent(event);
-	}
-
-	/**
-	 * Only intended for pre-Honeycomb devices.
-	 */
-	public void startPreHoneycombCopyMode() {
-		// mark as copying and reset any previous bounds
-		SelectionArea area = bridge.getSelectionArea();
-		area.reset();
-		area.setBounds(bridge.buffer.getColumns(), bridge.buffer.getRows());
-
-		bridge.setSelectingForCopy(true);
-
-		// Make sure we show the initial selection
-		bridge.redraw();
 	}
 
 	@Override
@@ -491,20 +399,6 @@ public class TerminalView extends FrameLayout implements FontSizeChangedListener
 					canvas.drawPath(ctrlCursor, cursorInversionPaint);
 
 				// Restore previous clip region
-				canvas.restore();
-			}
-
-			// draw any highlighted area
-			if (terminalTextViewOverlay == null && bridge.isSelectingForCopy()) {
-				SelectionArea area = bridge.getSelectionArea();
-				canvas.save(Canvas.ALL_SAVE_FLAG);
-				canvas.clipRect(
-					area.getLeft() * bridge.charWidth,
-					area.getTop() * bridge.charHeight,
-					(area.getRight() + 1) * bridge.charWidth,
-					(area.getBottom() + 1) * bridge.charHeight
-				);
-				canvas.drawPaint(cursorPaint);
 				canvas.restore();
 			}
 		}

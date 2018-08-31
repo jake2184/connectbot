@@ -343,27 +343,6 @@ public class TerminalBridge implements VDUDisplay {
 		}
 	}
 
-	/**
-	 * Only intended for pre-Honeycomb devices.
-	 */
-	public void setSelectingForCopy(boolean selectingForCopy) {
-		this.selectingForCopy = selectingForCopy;
-	}
-
-	/**
-	 * Only intended for pre-Honeycomb devices.
-	 */
-	public boolean isSelectingForCopy() {
-		return selectingForCopy;
-	}
-
-	/**
-	 * Only intended for pre-Honeycomb devices.
-	 */
-	public SelectionArea getSelectionArea() {
-		return selectionArea;
-	}
-
 	public void copyCurrentSelection() {
 		if (parent != null) {
 			parent.copyCurrentSelectionToClipboard();

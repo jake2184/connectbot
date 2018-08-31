@@ -80,15 +80,7 @@ public class KeyEventUtil {
 	private static class ClassCompat {
 		private static final ClassCompat INSTANCE;
 		static {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-				INSTANCE = new HCMR2AndNewer();
-			} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-				INSTANCE = new HCMR1AndNewer();
-			} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-				INSTANCE = new GingerbreadAndNewer();
-			} else {
-				INSTANCE = new ClassCompat();
-			}
+			INSTANCE = new HCMR2AndNewer();
 		}
 
 		private ClassCompat() {
