@@ -17,7 +17,7 @@
 
 package org.connectbot;
 
-import org.connectbot.bean.SelectionArea;
+import com.oxam.oxssh.bean.SelectionArea;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

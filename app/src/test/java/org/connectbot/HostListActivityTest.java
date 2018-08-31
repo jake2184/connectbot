@@ -17,7 +17,8 @@
 
 package org.connectbot;
 
-import org.connectbot.service.TerminalManager;
+import com.oxam.oxssh.HostListActivity;
+import com.oxam.oxssh.service.TerminalManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;

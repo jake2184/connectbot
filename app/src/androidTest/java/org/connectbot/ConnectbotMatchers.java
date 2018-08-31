@@ -10,7 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.connectbot.bean.HostBean;
+import com.oxam.oxssh.HostListActivity;
+import com.oxam.oxssh.bean.HostBean;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Assert;

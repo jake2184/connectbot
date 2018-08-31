@@ -1,7 +1,7 @@
 package org.connectbot;
 
-import org.connectbot.util.HostDatabase;
-import org.connectbot.util.PreferenceConstants;
+import com.oxam.oxssh.util.HostDatabase;
+import com.oxam.oxssh.util.PreferenceConstants;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,6 +23,9 @@ import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
+
+import com.oxam.oxssh.ConsoleActivity;
+import com.oxam.oxssh.HostListActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;

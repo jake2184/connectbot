@@ -32,7 +32,7 @@
 		android:text="@string/terminal_no_hosts_connected"
 		android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-	<org.connectbot.util.TerminalViewPager
+	<com.oxam.oxssh.util.TerminalViewPager
 		android:id="@+id/console_flip"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"

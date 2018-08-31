@@ -22,7 +22,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:fillViewport="true"
-	tools:context="org.connectbot.HostEditorFragment"
+	tools:context="org.connectbot.com.oxam.oxssh.HostEditorFragment"
 	>
 
 	<LinearLayout
@@ -380,7 +380,7 @@
 
 		</RelativeLayout>
 
-		<org.connectbot.views.CheckableMenuItem
+		<com.oxam.oxssh.views.CheckableMenuItem
 			android:id="@+id/compression_item"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -389,7 +389,7 @@
 			app:summary="@string/hostpref_compression_summary"
 			/>
 
-		<org.connectbot.views.CheckableMenuItem
+		<com.oxam.oxssh.views.CheckableMenuItem
 			android:id="@+id/start_shell_item"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -398,7 +398,7 @@
 			app:summary="@string/hostpref_wantsession_summary"
 			/>
 
-		<org.connectbot.views.CheckableMenuItem
+		<com.oxam.oxssh.views.CheckableMenuItem
 			android:id="@+id/stay_connected_item"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -407,7 +407,7 @@
 			app:summary="@string/hostpref_stayconnected_summary"
 			/>
 
-		<org.connectbot.views.CheckableMenuItem
+		<com.oxam.oxssh.views.CheckableMenuItem
 			android:id="@+id/close_on_disconnect_item"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"

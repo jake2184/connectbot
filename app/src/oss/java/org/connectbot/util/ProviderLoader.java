@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.connectbot.util;
+package com.oxam.oxssh.util;
 
 import java.security.Security;
 

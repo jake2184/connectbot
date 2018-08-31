@@ -16,7 +16,7 @@
  limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.connectbot"
+	package="com.oxam.oxssh"
 	android:installLocation="auto">
 
 	<uses-sdk />
@@ -39,7 +39,7 @@
 
 	<application
 		android:description="@string/app_desc"
-		android:icon="@drawable/icon"
+		android:icon="@mipmap/ic_launcher"
 		android:killAfterRestore="true"
 		android:label="@string/app_name"
 		android:supportsRtl="true"
@@ -50,7 +50,7 @@
 			android:value="2.1" />
 
 		<activity
-			android:name=".HostListActivity"
+			android:name="com.oxam.oxssh.HostListActivity"
 			android:label="@string/app_name"
 			android:launchMode="singleTop"
 			android:resizeableActivity="true">
@@ -73,70 +73,70 @@
 		</activity>
 
 		<activity
-				android:name=".EditHostActivity"
+				android:name="com.oxam.oxssh.EditHostActivity"
 				android:label="@string/title_host_editor">
 
 			<meta-data
 					android:name="android.support.PARENT_ACTIVITY"
-					android:value="org.connectbot.HostListActivity"/>
+					android:value="com.oxam.oxssh.HostListActivity"/>
 		</activity>
 
 		<activity
-			android:name=".SettingsActivity"
+			android:name="com.oxam.oxssh.SettingsActivity"
 			android:configChanges="keyboardHidden|orientation"
 			android:label="@string/title_settings">
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HostListActivity"/>
+				android:value="com.oxam.oxssh.HostListActivity"/>
 		</activity>
 
 		<activity
-			android:name=".HelpActivity"
+			android:name="com.oxam.oxssh.HelpActivity"
 			android:configChanges="keyboardHidden|orientation"
 			android:label="@string/title_help">
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HostListActivity"/>
+				android:value="com.oxam.oxssh.HostListActivity"/>
 		</activity>
 
 		<activity
-			android:name=".ColorsActivity"
+			android:name="com.oxam.oxssh.ColorsActivity"
 			android:configChanges="keyboardHidden|orientation"
 			android:label="@string/title_colors">
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HostListActivity"/>
+				android:value="com.oxam.oxssh.HostListActivity"/>
 		</activity>
 
 		<activity
-			android:name=".EulaActivity"
+			android:name="com.oxam.oxssh.EulaActivity"
 			android:configChanges="keyboardHidden|orientation"
 			android:label="@string/terms_and_conditions">
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HelpActivity"/>
+				android:value="com.oxam.oxssh.HelpActivity"/>
 		</activity>
 
 		<activity
-			android:name=".HintsActivity"
+			android:name="com.oxam.oxssh.HintsActivity"
 			android:label="@string/hints">
 
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HelpActivity"/>
+				android:value="com.oxam.oxssh.HelpActivity"/>
 		</activity>
 
 		<service
-			android:name="org.connectbot.service.TerminalManager"
+			android:name="com.oxam.oxssh.service.TerminalManager"
 			android:configChanges="keyboardHidden|orientation"
 			android:description="@string/service_desc"/>
 
 		<activity
-			android:name=".ConsoleActivity"
+			android:name="com.oxam.oxssh.ConsoleActivity"
 			android:configChanges="keyboardHidden|orientation"
 			android:launchMode="singleTop"
 			android:theme="@style/Theme.AppCompat"

@@ -2,7 +2,7 @@
   <configuration default="false" name="All tests" type="AndroidJUnit" factoryName="Android JUnit">
     <extension name="coverage" enabled="false" merge="false" runner="idea">
       <pattern>
-        <option name="PATTERN" value="org.connectbot.*" />
+        <option name="PATTERN" value="com.oxam.oxssh.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

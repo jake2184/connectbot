@@ -20,10 +20,10 @@ package org.connectbot.mock;
 import java.io.IOException;
 import java.util.Map;
 
-import org.connectbot.bean.HostBean;
-import org.connectbot.service.TerminalBridge;
-import org.connectbot.service.TerminalManager;
-import org.connectbot.transport.AbsTransport;
+import com.oxam.oxssh.bean.HostBean;
+import com.oxam.oxssh.service.TerminalBridge;
+import com.oxam.oxssh.service.TerminalManager;
+import com.oxam.oxssh.transport.AbsTransport;
 
 import android.net.Uri;
 

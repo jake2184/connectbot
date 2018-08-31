@@ -20,7 +20,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	tools:context="org.connectbot.EulaActivity"
+	tools:context="org.connectbot.com.oxam.oxssh.EulaActivity"
 	>
 
 	<LinearLayout

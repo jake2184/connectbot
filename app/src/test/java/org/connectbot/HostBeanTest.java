@@ -17,7 +17,7 @@
 
 package org.connectbot;
 
-import org.connectbot.bean.HostBean;
+import com.oxam.oxssh.bean.HostBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
