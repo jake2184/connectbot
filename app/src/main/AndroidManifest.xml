@@ -75,26 +75,6 @@
 		</activity>
 
 		<activity
-			android:name=".PubkeyListActivity"
-			android:configChanges="keyboardHidden|orientation"
-			android:label="@string/title_pubkey_list">
-
-			<meta-data
-				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.HostListActivity"/>
-		</activity>
-
-		<activity
-			android:name=".GeneratePubkeyActivity"
-			android:configChanges="keyboardHidden|orientation"
-			android:label="@string/title_pubkey_generate">
-
-			<meta-data
-				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.connectbot.PubkeyListActivity"/>
-		</activity>
-
-		<activity
 				android:name=".EditHostActivity"
 				android:label="@string/title_host_editor">
 

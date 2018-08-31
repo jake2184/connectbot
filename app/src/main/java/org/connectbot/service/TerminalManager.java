@@ -19,19 +19,15 @@ package org.connectbot.service;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.security.KeyPair;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.connectbot.R;
 import org.connectbot.bean.HostBean;
-import org.connectbot.bean.PubkeyBean;
 import org.connectbot.data.ColorStorage;
 import org.connectbot.data.HostStorage;
 import org.connectbot.transport.TransportFactory;
@@ -39,9 +35,6 @@ import org.connectbot.util.HostDatabase;
 import org.connectbot.util.PreferenceConstants;
 import org.connectbot.util.ProviderLoader;
 import org.connectbot.util.ProviderLoaderListener;
-import org.connectbot.util.PubkeyDatabase;
-import org.connectbot.util.PubkeyUtils;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -81,13 +74,11 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 
 	private final ArrayList<OnHostStatusChangedListener> hostStatusChangedListeners = new ArrayList<>();
 
-	public Map<String, KeyHolder> loadedKeypairs = new HashMap<>();
 
 	public Resources res;
 
 	public HostStorage hostdb;
 	public ColorStorage colordb;
-	public PubkeyDatabase pubkeydb;
 
 	protected SharedPreferences prefs;
 
@@ -97,7 +88,6 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 
 	private MediaPlayer mediaPlayer;
 
-	private Timer pubkeyTimer;
 
 	private Timer idleTimer;
 	private final long IDLE_TIMEOUT = 300000; // 5 minutes
@@ -125,24 +115,9 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 
 		res = getResources();
 
-		pubkeyTimer = new Timer("pubkeyTimer", true);
-
 		hostdb = HostDatabase.get(this);
 		colordb = HostDatabase.get(this);
-		pubkeydb = PubkeyDatabase.get(this);
 
-		// load all marked pubkeys into memory
-		updateSavingKeys();
-		List<PubkeyBean> pubkeys = pubkeydb.getAllStartPubkeys();
-
-		for (PubkeyBean pubkey : pubkeys) {
-			try {
-				KeyPair pair = PubkeyUtils.convertToKeyPair(pubkey, null);
-				addKey(pubkey, pair);
-			} catch (Exception e) {
-				Log.d(TAG, String.format("Problem adding key '%s' to in-memory cache", pubkey.getNickname()), e);
-			}
-		}
 
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		wantKeyVibration = prefs.getBoolean(PreferenceConstants.BUMPY_ARROWS, true);
@@ -171,13 +146,10 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 		disconnectAll(true, false);
 
 		hostdb = null;
-		pubkeydb = null;
 
 		synchronized (this) {
 			if (idleTimer != null)
 				idleTimer.cancel();
-			if (pubkeyTimer != null)
-				pubkeyTimer.cancel();
 		}
 
 		connectivityManager.cleanup();
@@ -355,104 +327,6 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 		}
 	}
 
-	public boolean isKeyLoaded(String nickname) {
-		return loadedKeypairs.containsKey(nickname);
-	}
-
-	public void addKey(PubkeyBean pubkey, KeyPair pair) {
-		addKey(pubkey, pair, false);
-	}
-
-	public void addKey(PubkeyBean pubkey, KeyPair pair, boolean force) {
-		if (!savingKeys && !force)
-			return;
-
-		removeKey(pubkey.getNickname());
-
-		byte[] sshPubKey = PubkeyUtils.extractOpenSSHPublic(pair);
-
-		KeyHolder keyHolder = new KeyHolder();
-		keyHolder.bean = pubkey;
-		keyHolder.pair = pair;
-		keyHolder.openSSHPubkey = sshPubKey;
-
-		loadedKeypairs.put(pubkey.getNickname(), keyHolder);
-
-		if (pubkey.getLifetime() > 0) {
-			final String nickname = pubkey.getNickname();
-			pubkeyTimer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					Log.d(TAG, "Unloading from memory key: " + nickname);
-					removeKey(nickname);
-				}
-			}, pubkey.getLifetime() * 1000);
-		}
-
-		Log.d(TAG, String.format("Added key '%s' to in-memory cache", pubkey.getNickname()));
-	}
-
-	public boolean removeKey(String nickname) {
-		Log.d(TAG, String.format("Removed key '%s' to in-memory cache", nickname));
-		return loadedKeypairs.remove(nickname) != null;
-	}
-
-	public boolean removeKey(byte[] publicKey) {
-		String nickname = null;
-		for (Entry<String, KeyHolder> entry : loadedKeypairs.entrySet()) {
-			if (Arrays.equals(entry.getValue().openSSHPubkey, publicKey)) {
-				nickname = entry.getKey();
-				break;
-			}
-		}
-
-		if (nickname != null) {
-			Log.d(TAG, String.format("Removed key '%s' to in-memory cache", nickname));
-			return removeKey(nickname);
-		} else
-			return false;
-	}
-
-	public KeyPair getKey(String nickname) {
-		if (loadedKeypairs.containsKey(nickname)) {
-			KeyHolder keyHolder = loadedKeypairs.get(nickname);
-			return keyHolder.pair;
-		} else
-			return null;
-	}
-
-	public KeyPair getKey(byte[] publicKey) {
-		for (KeyHolder keyHolder : loadedKeypairs.values()) {
-			if (Arrays.equals(keyHolder.openSSHPubkey, publicKey))
-				return keyHolder.pair;
-		}
-		return null;
-	}
-
-	public String getKeyNickname(byte[] publicKey) {
-		for (Entry<String, KeyHolder> entry : loadedKeypairs.entrySet()) {
-			if (Arrays.equals(entry.getValue().openSSHPubkey, publicKey))
-				return entry.getKey();
-		}
-		return null;
-	}
-
-	private void stopWithDelay() {
-		// TODO add in a way to check whether keys loaded are encrypted and only
-		// set timer when we have an encrypted key loaded
-
-		if (loadedKeypairs.size() > 0) {
-			synchronized (this) {
-				if (idleTimer == null)
-					idleTimer = new Timer("idleTimer", true);
-
-				idleTimer.schedule(new IdleTask(), IDLE_TIMEOUT);
-			}
-		} else {
-			Log.d(TAG, "Stopping service immediately");
-			stopSelf();
-		}
-	}
 
 	protected void stopNow() {
 		if (bridges.size() == 0) {
@@ -527,7 +401,7 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 		setResizeAllowed(true);
 
 		if (bridges.size() == 0) {
-			stopWithDelay();
+			stopSelf();
 		} else {
 			// tell each bridge to forget about their previous prompt handler
 			for (TerminalBridge bridge : bridges) {
@@ -654,11 +528,6 @@ public class TerminalManager extends Service implements BridgeDisconnectedListen
 		return resizeAllowed;
 	}
 
-	public static class KeyHolder {
-		public PubkeyBean bean;
-		public KeyPair pair;
-		public byte[] openSSHPubkey;
-	}
 
 	/**
 	 * Called when connectivity to the network is lost and it doesn't appear

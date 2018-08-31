@@ -19,7 +19,6 @@ package org.connectbot.service;
 
 import org.connectbot.util.HostDatabase;
 import org.connectbot.util.PreferenceConstants;
-import org.connectbot.util.PubkeyDatabase;
 
 import android.annotation.TargetApi;
 import android.app.backup.BackupAgentHelper;
@@ -48,9 +47,5 @@ public class BackupAgent extends BackupAgentHelper {
 		FileBackupHelper hosts = new FileBackupHelper(this, "../databases/" + HostDatabase.DB_NAME);
 		addHelper(HostDatabase.DB_NAME, hosts);
 
-		if (prefs.getBoolean(PreferenceConstants.BACKUP_KEYS, PreferenceConstants.BACKUP_KEYS_DEFAULT)) {
-			FileBackupHelper pubkeys = new FileBackupHelper(this, "../databases/" + PubkeyDatabase.DB_NAME);
-			addHelper(PubkeyDatabase.DB_NAME, pubkeys);
-		}
 	}
 }

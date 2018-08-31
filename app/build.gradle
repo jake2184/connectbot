@@ -202,8 +202,7 @@ tasks.withType(JavaCompile) {
             '-Xep:SynchronizeOnNonFinalField:OFF',
             '-XepExcludedPaths:' +
                     '.*/app/src/main/java/de/mud/.*|' +
-                    '.*/app/src/main/java/org/apache/.*|' +
-                    '.*/app/src/main/java/org/keyczar/.*',
+                    '.*/app/src/main/java/org/apache/.*|',
     ]
 }
 

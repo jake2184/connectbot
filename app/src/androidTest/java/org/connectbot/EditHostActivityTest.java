@@ -17,7 +17,6 @@
 
 package org.connectbot;
 
-import org.connectbot.util.PubkeyDatabase;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,7 +46,6 @@ public class EditHostActivityTest {
 	@Before
 	public void makeDatabasePristine() {
 		Context testContext = getTargetContext();
-		PubkeyDatabase.resetInMemoryInstance(testContext);
 
 		mActivityRule.launchActivity(new Intent());
 	}

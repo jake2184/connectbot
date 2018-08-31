@@ -53,8 +53,6 @@ public class HostEditorFragment extends Fragment {
 	private static final String ARG_EXISTING_HOST_ID = "existingHostId";
 	private static final String ARG_EXISTING_HOST = "existingHost";
 	private static final String ARG_IS_EXPANDED = "isExpanded";
-	private static final String ARG_PUBKEY_NAMES = "pubkeyNames";
-	private static final String ARG_PUBKEY_VALUES = "pubkeyValues";
 	private static final String ARG_QUICKCONNECT_STRING = "quickConnectString";
 
 	// Note: The "max" value for mFontSizeSeekBar is 32. If these font values change, this value
@@ -65,10 +63,6 @@ public class HostEditorFragment extends Fragment {
 	// The host being edited.
 	private HostBean mHost;
 
-	// The pubkey lists (names and values). Note that these are declared as ArrayLists rather than
-	// Lists because Bundles can only contain ArrayLists, not general Lists.
-	private ArrayList<String> mPubkeyNames;
-	private ArrayList<String> mPubkeyValues;
 
 	// The listener for changes to this host.
 	private Listener mListener;
@@ -113,8 +107,6 @@ public class HostEditorFragment extends Fragment {
 	private TextView mColorText;
 	private EditText mFontSizeText;
 	private SeekBar mFontSizeSeekBar;
-	private View mPubkeyItem;
-	private TextView mPubkeyText;
 	private View mDelKeyItem;
 	private TextView mDelKeyText;
 	private View mEncodingItem;
@@ -129,15 +121,13 @@ public class HostEditorFragment extends Fragment {
 	private HostTextFieldWatcher mFontSizeTextChangeListener;
 
 	public static HostEditorFragment newInstance(
-			HostBean existingHost, ArrayList<String> pubkeyNames, ArrayList<String> pubkeyValues) {
+			HostBean existingHost) {
 		HostEditorFragment fragment = new HostEditorFragment();
 		Bundle args = new Bundle();
 		if (existingHost != null) {
 			args.putLong(ARG_EXISTING_HOST_ID, existingHost.getId());
 			args.putParcelable(ARG_EXISTING_HOST, existingHost.getValues());
 		}
-		args.putStringArrayList(ARG_PUBKEY_NAMES, pubkeyNames);
-		args.putStringArrayList(ARG_PUBKEY_VALUES, pubkeyValues);
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -158,9 +148,6 @@ public class HostEditorFragment extends Fragment {
 		} else {
 			mHost = new HostBean();
 		}
-
-		mPubkeyNames = bundle.getStringArrayList(ARG_PUBKEY_NAMES);
-		mPubkeyValues = bundle.getStringArrayList(ARG_PUBKEY_VALUES);
 
 		mIsUriEditorExpanded = bundle.getBoolean(ARG_IS_EXPANDED);
 	}
@@ -317,39 +304,6 @@ public class HostEditorFragment extends Fragment {
 			}
 		});
 		mFontSizeSeekBar.setProgress(mHost.getFontSize() - MINIMUM_FONT_SIZE);
-
-		mPubkeyItem = view.findViewById(R.id.pubkey_item);
-		mPubkeyItem.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				PopupMenu menu = new PopupMenu(getActivity(), v);
-				for (String name : mPubkeyNames) {
-					menu.getMenu().add(name);
-				}
-				menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-					@Override
-					public boolean onMenuItemClick(MenuItem item) {
-						for (int i = 0; i < mPubkeyNames.size(); i++) {
-							if (mPubkeyNames.get(i).equals(item.getTitle())) {
-								mHost.setPubkeyId(Long.parseLong(mPubkeyValues.get(i)));
-								mPubkeyText.setText(mPubkeyNames.get(i));
-								return true;
-							}
-						}
-						return false;
-					}
-				});
-				menu.show();
-			}
-		});
-
-		mPubkeyText = view.findViewById(R.id.pubkey_text);
-		for (int i = 0; i < mPubkeyValues.size(); i++) {
-			if (mHost.getPubkeyId() == Long.parseLong(mPubkeyValues.get(i))) {
-				mPubkeyText.setText(mPubkeyNames.get(i));
-				break;
-			}
-		}
 
 		mDelKeyItem = view.findViewById(R.id.delkey_item);
 		mDelKeyItem.setOnClickListener(new View.OnClickListener() {
@@ -602,8 +556,6 @@ public class HostEditorFragment extends Fragment {
 		savedInstanceState.putBoolean(ARG_IS_EXPANDED, mIsUriEditorExpanded);
 		savedInstanceState.putString(
 				ARG_QUICKCONNECT_STRING, mQuickConnectField.getText().toString());
-		savedInstanceState.putStringArrayList(ARG_PUBKEY_NAMES, mPubkeyNames);
-		savedInstanceState.putStringArrayList(ARG_PUBKEY_VALUES, mPubkeyValues);
 	}
 
 	/**

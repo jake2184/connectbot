@@ -20,47 +20,25 @@ package org.connectbot.transport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.interfaces.DSAPrivateKey;
-import java.security.interfaces.DSAPublicKey;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.connectbot.R;
 import org.connectbot.bean.HostBean;
-import org.connectbot.bean.PubkeyBean;
 import org.connectbot.service.TerminalBridge;
 import org.connectbot.service.TerminalManager;
-import org.connectbot.service.TerminalManager.KeyHolder;
 import org.connectbot.util.Ed25519Provider;
 import org.connectbot.util.HostDatabase;
-import org.connectbot.util.PubkeyDatabase;
-import org.connectbot.util.PubkeyUtils;
 
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-import net.i2p.crypto.eddsa.EdDSAPrivateKey;
-import net.i2p.crypto.eddsa.EdDSAPublicKey;
 
-import com.trilead.ssh2.AuthAgentCallback;
 import com.trilead.ssh2.ChannelCondition;
 import com.trilead.ssh2.Connection;
 import com.trilead.ssh2.ConnectionInfo;
@@ -69,17 +47,12 @@ import com.trilead.ssh2.ExtendedServerHostKeyVerifier;
 import com.trilead.ssh2.InteractiveCallback;
 import com.trilead.ssh2.KnownHosts;
 import com.trilead.ssh2.Session;
-import com.trilead.ssh2.crypto.PEMDecoder;
-import com.trilead.ssh2.signature.DSASHA1Verify;
-import com.trilead.ssh2.signature.ECDSASHA2Verify;
-import com.trilead.ssh2.signature.Ed25519Verify;
-import com.trilead.ssh2.signature.RSASHA1Verify;
 
 /**
  * @author Kenny Root
  *
  */
-public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveCallback, AuthAgentCallback {
+public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveCallback{
 	static {
 		// Since this class deals with EdDSA keys, we need to make sure this is available.
 		Ed25519Provider.insertIfNeeded();
@@ -116,7 +89,6 @@ public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveC
 	private volatile boolean connected = false;
 	private volatile boolean sessionOpen = false;
 
-	private boolean pubkeysExhausted = false;
 	private boolean interactiveCanContinue = true;
 
 	private Connection connection;
@@ -279,78 +251,6 @@ public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveC
 	}
 
 	/**
-	 * Attempt connection with given {@code pubkey}.
-	 * @return {@code true} for successful authentication
-	 * @throws NoSuchAlgorithmException
-	 * @throws InvalidKeySpecException
-	 * @throws IOException
-	 */
-	private boolean tryPublicKey(PubkeyBean pubkey) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
-		KeyPair pair = null;
-
-		if (manager.isKeyLoaded(pubkey.getNickname())) {
-			// load this key from memory if its already there
-			Log.d(TAG, String.format("Found unlocked key '%s' already in-memory", pubkey.getNickname()));
-
-			if (pubkey.isConfirmUse()) {
-				if (!promptForPubkeyUse(pubkey.getNickname()))
-					return false;
-			}
-
-			pair = manager.getKey(pubkey.getNickname());
-		} else {
-			// otherwise load key from database and prompt for password as needed
-			String password = null;
-			if (pubkey.isEncrypted()) {
-				password = bridge.getPromptHelper().requestStringPrompt(null,
-						manager.res.getString(R.string.prompt_pubkey_password, pubkey.getNickname()));
-
-				// Something must have interrupted the prompt.
-				if (password == null)
-					return false;
-			}
-
-			if (PubkeyDatabase.KEY_TYPE_IMPORTED.equals(pubkey.getType())) {
-				// load specific key using pem format
-				pair = PEMDecoder.decode(new String(pubkey.getPrivateKey(), "UTF-8").toCharArray(), password);
-			} else {
-				// load using internal generated format
-				PrivateKey privKey;
-				try {
-					privKey = PubkeyUtils.decodePrivate(pubkey.getPrivateKey(),
-							pubkey.getType(), password);
-				} catch (Exception e) {
-					String message = String.format("Bad password for key '%s'. Authentication failed.", pubkey.getNickname());
-					Log.e(TAG, message, e);
-					bridge.outputLine(message);
-					return false;
-				}
-
-				PublicKey pubKey = PubkeyUtils.decodePublic(pubkey.getPublicKey(), pubkey.getType());
-
-				// convert key to trilead format
-				pair = new KeyPair(pubKey, privKey);
-				Log.d(TAG, "Unlocked key " + PubkeyUtils.formatKey(pubKey));
-			}
-
-			Log.d(TAG, String.format("Unlocked key '%s'", pubkey.getNickname()));
-
-			// save this key in memory
-			manager.addKey(pubkey, pair);
-		}
-
-		return tryPublicKey(host.getUsername(), pubkey.getNickname(), pair);
-	}
-
-	private boolean tryPublicKey(String username, String keyNickname, KeyPair pair) throws IOException {
-		//bridge.outputLine(String.format("Attempting 'publickey' with key '%s' [%s]...", keyNickname, trileadKey.toString()));
-		boolean success = connection.authenticateWithPublicKey(username, pair);
-		if (!success)
-			bridge.outputLine(manager.res.getString(R.string.terminal_auth_pubkey_fail, keyNickname));
-		return success;
-	}
-
-	/**
 	 * Internal method to request actual PTY terminal once we've finished
 	 * authentication. If called before authenticated, it will just fail.
 	 */
@@ -365,9 +265,6 @@ public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveC
 
 		try {
 			session = connection.openSession();
-
-			if (!useAuthAgent.equals(HostDatabase.AUTHAGENT_NO))
-				session.requestAuthAgentForwarding(this);
 
 			session.requestPTY(getEmulation(), columns, rows, width, height, null);
 			session.startShell();
@@ -693,114 +590,6 @@ public class SSH extends AbsTransport implements ConnectionMonitor, InteractiveC
 				context.getString(R.string.format_username),
 				context.getString(R.string.format_hostname),
 				context.getString(R.string.format_port));
-	}
-
-	@Override
-	public void setUseAuthAgent(String useAuthAgent) {
-		this.useAuthAgent = useAuthAgent;
-	}
-
-	@Override
-	public Map<String, byte[]> retrieveIdentities() {
-		Map<String, byte[]> pubKeys = new HashMap<>(manager.loadedKeypairs.size());
-
-		for (Entry<String, KeyHolder> entry : manager.loadedKeypairs.entrySet()) {
-			KeyPair pair = entry.getValue().pair;
-
-			try {
-				PrivateKey privKey = pair.getPrivate();
-				if (privKey instanceof RSAPrivateKey) {
-					RSAPublicKey pubkey = (RSAPublicKey) pair.getPublic();
-					pubKeys.put(entry.getKey(), RSASHA1Verify.encodeSSHRSAPublicKey(pubkey));
-				} else if (privKey instanceof DSAPrivateKey) {
-					DSAPublicKey pubkey = (DSAPublicKey) pair.getPublic();
-					pubKeys.put(entry.getKey(), DSASHA1Verify.encodeSSHDSAPublicKey(pubkey));
-				} else if (privKey instanceof ECPrivateKey) {
-					ECPublicKey pubkey = (ECPublicKey) pair.getPublic();
-					pubKeys.put(entry.getKey(), ECDSASHA2Verify.encodeSSHECDSAPublicKey(pubkey));
-				} else if (privKey instanceof EdDSAPrivateKey) {
-					EdDSAPublicKey pubkey = (EdDSAPublicKey) pair.getPublic();
-					pubKeys.put(entry.getKey(), Ed25519Verify.encodeSSHEd25519PublicKey(pubkey));
-				} else
-					continue;
-			} catch (IOException e) {
-				continue;
-			}
-		}
-
-		return pubKeys;
-	}
-
-	@Override
-	public KeyPair getKeyPair(byte[] publicKey) {
-		String nickname = manager.getKeyNickname(publicKey);
-
-		if (nickname == null)
-			return null;
-
-		if (useAuthAgent.equals(HostDatabase.AUTHAGENT_NO)) {
-			Log.e(TAG, "");
-			return null;
-		} else if (useAuthAgent.equals(HostDatabase.AUTHAGENT_CONFIRM) ||
-				manager.loadedKeypairs.get(nickname).bean.isConfirmUse()) {
-			if (!promptForPubkeyUse(nickname))
-				return null;
-		}
-		return manager.getKey(nickname);
-	}
-
-	private boolean promptForPubkeyUse(String nickname) {
-		Boolean result = bridge.promptHelper.requestBooleanPrompt(null,
-				manager.res.getString(R.string.prompt_allow_agent_to_use_key,
-						nickname));
-		return result;
-	}
-
-	@Override
-	public boolean addIdentity(KeyPair pair, String comment, boolean confirmUse, int lifetime) {
-		PubkeyBean pubkey = new PubkeyBean();
-//		pubkey.setType(PubkeyDatabase.KEY_TYPE_IMPORTED);
-		pubkey.setNickname(comment);
-		pubkey.setConfirmUse(confirmUse);
-		pubkey.setLifetime(lifetime);
-		manager.addKey(pubkey, pair);
-		return true;
-	}
-
-	@Override
-	public boolean removeAllIdentities() {
-		manager.loadedKeypairs.clear();
-		return true;
-	}
-
-	@Override
-	public boolean removeIdentity(byte[] publicKey) {
-		return manager.removeKey(publicKey);
-	}
-
-	@Override
-	public boolean isAgentLocked() {
-		return agentLockPassphrase != null;
-	}
-
-	@Override
-	public boolean requestAgentUnlock(String unlockPassphrase) {
-		if (agentLockPassphrase == null)
-			return false;
-
-		if (agentLockPassphrase.equals(unlockPassphrase))
-			agentLockPassphrase = null;
-
-		return agentLockPassphrase == null;
-	}
-
-	@Override
-	public boolean setAgentLock(String lockPassphrase) {
-		if (agentLockPassphrase != null)
-			return false;
-
-		agentLockPassphrase = lockPassphrase;
-		return true;
 	}
 
 	/* (non-Javadoc)

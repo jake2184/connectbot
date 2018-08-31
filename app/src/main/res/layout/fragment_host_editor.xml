@@ -313,40 +313,6 @@
 		</RelativeLayout>
 
 		<RelativeLayout
-			android:id="@+id/pubkey_item"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:focusable="true"
-			>
-
-			<ImageView
-				android:layout_width="24dp"
-				android:layout_height="24dp"
-				app:srcCompat="@drawable/ic_vpn_key"
-				android:contentDescription="@null"
-				style="@style/ListItemIcon"
-				/>
-
-			<TextView
-				android:id="@+id/pubkey_title"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="@string/hostpref_pubkeyid_title"
-				style="@style/ListItemFirstLineText.WithIcon"
-				/>
-
-			<TextView
-				android:id="@+id/pubkey_text"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_below="@id/pubkey_title"
-				tools:text="Use any key"
-				style="@style/ListItemSecondLineText.WithIcon"
-				/>
-
-		</RelativeLayout>
-
-		<RelativeLayout
 			android:id="@+id/delkey_item"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"

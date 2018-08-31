@@ -48,7 +48,6 @@ public class HostBean extends AbstractBean {
 	private boolean useKeys = true;
 	private String useAuthAgent = HostDatabase.AUTHAGENT_NO;
 	private String postLogin = null;
-	private long pubkeyId = HostDatabase.PUBKEYID_ANY;
 	private boolean wantSession = true;
 	private String delKey = HostDatabase.DELKEY_DEL;
 	private int fontSize = DEFAULT_FONT_SIZE;
@@ -143,12 +142,6 @@ public class HostBean extends AbstractBean {
 	public String getPostLogin() {
 		return postLogin;
 	}
-	public void setPubkeyId(long pubkeyId) {
-		this.pubkeyId = pubkeyId;
-	}
-	public long getPubkeyId() {
-		return pubkeyId;
-	}
 	public void setWantSession(boolean wantSession) {
 		this.wantSession = wantSession;
 	}
@@ -222,7 +215,6 @@ public class HostBean extends AbstractBean {
 		values.put(HostDatabase.FIELD_HOST_USEKEYS, Boolean.toString(useKeys));
 		values.put(HostDatabase.FIELD_HOST_USEAUTHAGENT, useAuthAgent);
 		values.put(HostDatabase.FIELD_HOST_POSTLOGIN, postLogin);
-		values.put(HostDatabase.FIELD_HOST_PUBKEYID, pubkeyId);
 		values.put(HostDatabase.FIELD_HOST_WANTSESSION, Boolean.toString(wantSession));
 		values.put(HostDatabase.FIELD_HOST_DELKEY, delKey);
 		values.put(HostDatabase.FIELD_HOST_FONTSIZE, fontSize);
@@ -246,7 +238,6 @@ public class HostBean extends AbstractBean {
 		host.setUseKeys(Boolean.valueOf(values.getAsString(HostDatabase.FIELD_HOST_USEKEYS)));
 		host.setUseAuthAgent(values.getAsString(HostDatabase.FIELD_HOST_USEAUTHAGENT));
 		host.setPostLogin(values.getAsString(HostDatabase.FIELD_HOST_POSTLOGIN));
-		host.setPubkeyId(values.getAsLong(HostDatabase.FIELD_HOST_PUBKEYID));
 		host.setWantSession(Boolean.valueOf(values.getAsString(HostDatabase.FIELD_HOST_WANTSESSION)));
 		host.setDelKey(values.getAsString(HostDatabase.FIELD_HOST_DELKEY));
 		host.setFontSize(values.getAsInteger(HostDatabase.FIELD_HOST_FONTSIZE));

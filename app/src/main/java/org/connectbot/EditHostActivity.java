@@ -18,7 +18,6 @@
 package org.connectbot;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +26,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
@@ -41,7 +39,6 @@ import org.connectbot.bean.HostBean;
 import org.connectbot.service.TerminalBridge;
 import org.connectbot.service.TerminalManager;
 import org.connectbot.util.HostDatabase;
-import org.connectbot.util.PubkeyDatabase;
 
 public class EditHostActivity extends AppCompatActivity implements HostEditorFragment.Listener {
 
@@ -51,7 +48,6 @@ public class EditHostActivity extends AppCompatActivity implements HostEditorFra
 	private static final int DISABLED_ALPHA = 130;
 
 	private HostDatabase mHostDb;
-	private PubkeyDatabase mPubkeyDb;
 	private ServiceConnection mTerminalConnection;
 	private HostBean mHost;
 	private TerminalBridge mBridge;
@@ -73,7 +69,6 @@ public class EditHostActivity extends AppCompatActivity implements HostEditorFra
 		super.onCreate(savedInstanceState);
 
 		mHostDb = HostDatabase.get(this);
-		mPubkeyDb = PubkeyDatabase.get(this);
 
 		mTerminalConnection = new ServiceConnection() {
 			@Override
@@ -92,42 +87,17 @@ public class EditHostActivity extends AppCompatActivity implements HostEditorFra
 		mIsCreating = hostId == NO_HOST_ID;
 		mHost = mIsCreating ? null : mHostDb.findHostById(hostId);
 
-		// Note that the lists must be explicitly declared as ArrayLists because Bundle only accepts
-		// ArrayLists of Strings.
-		ArrayList<String> pubkeyNames = new ArrayList<>();
-		ArrayList<String> pubkeyValues = new ArrayList<>();
-
-		// First, add default pubkey names and values (e.g., "use any" and "don't use any").
-		TypedArray defaultPubkeyNames = getResources().obtainTypedArray(R.array.list_pubkeyids);
-		for (int i = 0; i < defaultPubkeyNames.length(); i++) {
-			pubkeyNames.add(defaultPubkeyNames.getString(i));
-		}
-		TypedArray defaultPubkeyValues = getResources().obtainTypedArray(R.array.list_pubkeyids_value);
-		for (int i = 0; i < defaultPubkeyValues.length(); i++) {
-			pubkeyValues.add(defaultPubkeyValues.getString(i));
-		}
-
-		// Now, add pubkeys which have been added by the user.
-		for (CharSequence cs : mPubkeyDb.allValues(PubkeyDatabase.FIELD_PUBKEY_NICKNAME)) {
-			pubkeyNames.add(cs.toString());
-		}
-		for (CharSequence cs : mPubkeyDb.allValues("_id")) {
-			pubkeyValues.add(cs.toString());
-		}
-
 		setContentView(R.layout.activity_edit_host);
 		FragmentManager fm = getSupportFragmentManager();
 		HostEditorFragment fragment =
 				(HostEditorFragment) fm.findFragmentById(R.id.fragment_container);
 
 		if (fragment == null) {
-			fragment = HostEditorFragment.newInstance(mHost, pubkeyNames, pubkeyValues);
+			fragment = HostEditorFragment.newInstance(mHost);
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.fragment_container, fragment).commit();
 		}
 
-		defaultPubkeyNames.recycle();
-		defaultPubkeyValues.recycle();
 	}
 
 	@Override

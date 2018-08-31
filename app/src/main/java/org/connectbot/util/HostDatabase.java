@@ -64,7 +64,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 	public final static String FIELD_HOST_USEKEYS = "usekeys";
 	public final static String FIELD_HOST_USEAUTHAGENT = "useauthagent";
 	public final static String FIELD_HOST_POSTLOGIN = "postlogin";
-	public final static String FIELD_HOST_PUBKEYID = "pubkeyid";
 	public final static String FIELD_HOST_WANTSESSION = "wantsession";
 	public final static String FIELD_HOST_DELKEY = "delkey";
 	public final static String FIELD_HOST_FONTSIZE = "fontsize";
@@ -104,8 +103,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 
 	public final static String ENCODING_DEFAULT = Charset.defaultCharset().name();
 
-	public final static long PUBKEYID_NEVER = -2;
-	public final static long PUBKEYID_ANY = -1;
 
 	public static final int DEFAULT_COLOR_SCHEME = 0;
 
@@ -121,7 +118,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 			+ FIELD_HOST_USEKEYS + " TEXT, "
 			+ FIELD_HOST_USEAUTHAGENT + " TEXT, "
 			+ FIELD_HOST_POSTLOGIN + " TEXT, "
-			+ FIELD_HOST_PUBKEYID + " INTEGER DEFAULT " + PUBKEYID_ANY + ", "
 			+ FIELD_HOST_DELKEY + " TEXT DEFAULT '" + DELKEY_DEL + "', "
 			+ FIELD_HOST_FONTSIZE + " INTEGER, "
 			+ FIELD_HOST_WANTSESSION + " TEXT DEFAULT '" + Boolean.toString(true) + "', "
@@ -254,10 +250,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 		}
 
 		switch (oldVersion) {
-		case 10:
-			db.execSQL("ALTER TABLE " + TABLE_HOSTS
-					+ " ADD COLUMN " + FIELD_HOST_PUBKEYID + " INTEGER DEFAULT " + PUBKEYID_ANY);
-			// fall through
 		case 12:
 			db.execSQL("ALTER TABLE " + TABLE_HOSTS
 					+ " ADD COLUMN " + FIELD_HOST_WANTSESSION + " TEXT DEFAULT '" + Boolean.toString(true) + "'");
@@ -343,7 +335,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 					+ FIELD_HOST_USEKEYS + ", "
 					+ FIELD_HOST_USEAUTHAGENT + ", "
 					+ FIELD_HOST_POSTLOGIN + ", "
-					+ FIELD_HOST_PUBKEYID + ", "
 					+ FIELD_HOST_DELKEY + ", "
 					+ FIELD_HOST_FONTSIZE + ", "
 					+ FIELD_HOST_WANTSESSION + ", "
@@ -456,7 +447,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 			COL_USEKEYS = c.getColumnIndexOrThrow(FIELD_HOST_USEKEYS),
 			COL_USEAUTHAGENT = c.getColumnIndexOrThrow(FIELD_HOST_USEAUTHAGENT),
 			COL_POSTLOGIN = c.getColumnIndexOrThrow(FIELD_HOST_POSTLOGIN),
-			COL_PUBKEYID = c.getColumnIndexOrThrow(FIELD_HOST_PUBKEYID),
 			COL_WANTSESSION = c.getColumnIndexOrThrow(FIELD_HOST_WANTSESSION),
 			COL_DELKEY = c.getColumnIndexOrThrow(FIELD_HOST_DELKEY),
 			COL_FONTSIZE = c.getColumnIndexOrThrow(FIELD_HOST_FONTSIZE),
@@ -479,7 +469,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 			host.setUseKeys(Boolean.valueOf(c.getString(COL_USEKEYS)));
 			host.setUseAuthAgent(c.getString(COL_USEAUTHAGENT));
 			host.setPostLogin(c.getString(COL_POSTLOGIN));
-			host.setPubkeyId(c.getLong(COL_PUBKEYID));
 			host.setWantSession(Boolean.valueOf(c.getString(COL_WANTSESSION)));
 			host.setDelKey(c.getString(COL_DELKEY));
 			host.setFontSize(c.getInt(COL_FONTSIZE));
@@ -684,26 +673,6 @@ public class HostDatabase extends RobustSQLiteOpenHelper implements HostStorage,
 		return knownAlgorithms;
 	}
 
-	/**
-	 * Unset any hosts using a pubkey ID that has been deleted.
-	 * @param pubkeyId
-	 */
-	public void stopUsingPubkey(long pubkeyId) {
-		if (pubkeyId < 0) return;
-
-		ContentValues values = new ContentValues();
-		values.put(FIELD_HOST_PUBKEYID, PUBKEYID_ANY);
-
-		mDb.beginTransaction();
-		try {
-			mDb.update(TABLE_HOSTS, values, FIELD_HOST_PUBKEYID + " = ?", new String[] {String.valueOf(pubkeyId)});
-			mDb.setTransactionSuccessful();
-		} finally {
-			mDb.endTransaction();
-		}
-
-		Log.d(TAG, String.format("Set all hosts using pubkey id %d to -1", pubkeyId));
-	}
 
 	@Override
 	public int[] getColorsForScheme(int scheme) {
