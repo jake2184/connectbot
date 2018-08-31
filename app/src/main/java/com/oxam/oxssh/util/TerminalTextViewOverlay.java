@@ -358,18 +358,19 @@ public class TerminalTextViewOverlay extends android.support.v7.widget.AppCompat
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			TerminalTextViewOverlay.this.selectionActionMode = mode;
-
-			menu.clear();
-
-			menu.add(0, COPY, 0, R.string.console_menu_copy)
-					.setIcon(R.drawable.ic_action_copy)
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_IF_ROOM);
-			menu.add(0, PASTE, 1, R.string.console_menu_paste)
-					.setIcon(R.drawable.ic_action_paste)
-					.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-			return true;
+//			TerminalTextViewOverlay.this.selectionActionMode = mode;
+//
+//			menu.clear();
+//
+//			menu.add(0, COPY, 0, R.string.console_menu_copy)
+//					.setIcon(R.drawable.ic_action_copy)
+//					.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_IF_ROOM);
+//			menu.add(0, PASTE, 1, R.string.console_menu_paste)
+//					.setIcon(R.drawable.ic_action_paste)
+//					.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_IF_ROOM);
+//
+//			return true;
+			return false;
 		}
 
 		@Override
