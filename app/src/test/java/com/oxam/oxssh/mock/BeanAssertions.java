@@ -1,9 +1,7 @@
 /**
  * Originally from http://www.cornetdesign.com/files/BeanTestCase.java.txt
  */
-package org.connectbot.mock;
-
-import junit.framework.TestCase;
+package com.oxam.oxssh.mock;
 
 import java.lang.reflect.Field;
 

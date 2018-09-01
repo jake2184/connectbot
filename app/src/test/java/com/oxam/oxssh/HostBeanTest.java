@@ -1,6 +1,6 @@
 /*
  * ConnectBot: simple, powerful, open-source SSH client for Android
- * Copyright 2007 Kenny Root, Jeffrey Sharkey
+ * Copyright 2018 Kenny Root, Jeffrey Sharkey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.connectbot;
+package com.oxam.oxssh;
 
 import com.oxam.oxssh.bean.HostBean;
 import org.junit.Before;
@@ -28,8 +28,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.connectbot.mock.BeanAssertions.assertMeetsEqualsContract;
-import static org.connectbot.mock.BeanAssertions.assertMeetsHashCodeContract;
+import static com.oxam.oxssh.mock.BeanAssertions.assertMeetsEqualsContract;
+import static com.oxam.oxssh.mock.BeanAssertions.assertMeetsHashCodeContract;
 
 /**
  * @author Kenny Root

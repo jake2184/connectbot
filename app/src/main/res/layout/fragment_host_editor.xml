@@ -22,7 +22,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:fillViewport="true"
-	tools:context="org.connectbot.com.oxam.oxssh.HostEditorFragment"
+	tools:context="com.oxam.oxssh.HostEditorFragment"
 	>
 
 	<LinearLayout

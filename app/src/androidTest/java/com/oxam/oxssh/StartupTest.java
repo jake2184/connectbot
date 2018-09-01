@@ -1,4 +1,21 @@
-package org.connectbot;
+/*
+ * ConnectBot: simple, powerful, open-source SSH client for Android
+ * Copyright 2018 Kenny Root, Jeffrey Sharkey
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.oxam.oxssh;
 
 import com.oxam.oxssh.util.HostDatabase;
 import com.oxam.oxssh.util.PreferenceConstants;
@@ -24,9 +41,6 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 
-import com.oxam.oxssh.ConsoleActivity;
-import com.oxam.oxssh.HostListActivity;
-
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -45,11 +59,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.connectbot.ConnectbotMatchers.hasHolderItem;
-import static org.connectbot.ConnectbotMatchers.withColoredText;
-import static org.connectbot.ConnectbotMatchers.withConnectedHost;
-import static org.connectbot.ConnectbotMatchers.withDisconnectedHost;
-import static org.connectbot.ConnectbotMatchers.withHostNickname;
+import static com.oxam.oxssh.ConnectbotMatchers.hasHolderItem;
+import static com.oxam.oxssh.ConnectbotMatchers.withColoredText;
+import static com.oxam.oxssh.ConnectbotMatchers.withConnectedHost;
+import static com.oxam.oxssh.ConnectbotMatchers.withDisconnectedHost;
+import static com.oxam.oxssh.ConnectbotMatchers.withHostNickname;
 import static org.hamcrest.CoreMatchers.allOf;
 
 @RunWith(AndroidJUnit4.class)

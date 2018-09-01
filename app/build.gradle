@@ -62,7 +62,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "org.connectbot"
+        applicationId "com.oxam.oxssh"
         versionName androidGitVersion.name()
         versionCode androidGitVersion.code()
 
@@ -75,7 +75,7 @@ android {
             abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
         }
 
-        testApplicationId "org.connectbot.tests"
+        testApplicationId "com.oxam.oxssh.tests"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         // The following argument makes the Android Test Orchestrator run its

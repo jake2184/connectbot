@@ -1,6 +1,6 @@
 /*
  * ConnectBot: simple, powerful, open-source SSH client for Android
- * Copyright 2015 Kenny Root, Jeffrey Sharkey
+ * Copyright 2018 Kenny Root, Jeffrey Sharkey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.connectbot;
+package com.oxam.oxssh;
 
 import com.oxam.oxssh.HostListActivity;
 import com.oxam.oxssh.service.TerminalManager;
@@ -41,7 +41,7 @@ public class HostListActivityTest {
 	private void mockBindToService(TerminalManager terminalManager) {
 		TerminalManager.TerminalBinder stubBinder = mock(TerminalManager.TerminalBinder.class);
 		when(stubBinder.getService()).thenReturn(terminalManager);
-		shadowOf(RuntimeEnvironment.application).setComponentNameAndServiceForBindService(new ComponentName("org.connectbot", TerminalManager.class.getName()), stubBinder);
+		shadowOf(RuntimeEnvironment.application).setComponentNameAndServiceForBindService(new ComponentName("com.oxam.oxssh", TerminalManager.class.getName()), stubBinder);
 	}
 
 	@Test

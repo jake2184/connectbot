@@ -20,5 +20,5 @@
 	android:id="@+id/fragment_container"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	tools:context="org.connectbot.com.oxam.oxssh.EditHostActivity"
+	tools:context="com.oxam.oxssh.EditHostActivity"
 	tools:ignore="MergeRootFrame" />
