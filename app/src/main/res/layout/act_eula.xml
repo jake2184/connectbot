@@ -29,10 +29,17 @@
 		android:orientation="vertical"
 		android:padding="10dip"
 		>
+		<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="OxSSH is Oxford Asset Management's in-house SSH app. Is it heavily based on ConnectBot."
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			/>
 
 		<TextView
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
+			android:paddingTop="10dip"
 			android:text="ConnectBot is a simple, powerful, open-source Secure Shell (SSH) client for your Android device."
 			android:textAppearance="?android:attr/textAppearanceMedium"
 			/>

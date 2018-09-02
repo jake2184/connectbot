@@ -33,9 +33,9 @@
 	<!-- Window title for Help index -->
 	<string name="title_help">"Help"</string>
 	<!-- Window title for color list editing screen -->
-	<string name="title_colors">"Colors"</string>
+	<string name="title_colors">"Colours"</string>
 	<!-- Dialog title for color picker dialog -->
-	<string name="title_color_picker">"Pick a color"</string>
+	<string name="title_color_picker">"Pick a colour"</string>
 	<!-- Window title for the global applications settings activity. -->
 	<string name="title_settings">Settings</string>
 
@@ -266,7 +266,7 @@
 	<string name="hostpref_nickname_title">"Nickname"</string>
 
 	<!-- Host color category preference title -->
-	<string name="hostpref_color_title">"Color category"</string>
+	<string name="hostpref_color_title">"Colour category"</string>
 
 	<!-- Host's default font size when opening the terminal in points (pt) -->
 	<string name="hostpref_fontsize_title">"Font size (pt)"</string>
@@ -352,7 +352,7 @@
 	<string name="format_port">"port"</string>
 
 	<!-- Selection choice to sort hosts by color. -->
-	<string name="list_menu_sortcolor">"Sort by color"</string>
+	<string name="list_menu_sortcolor">"Sort by colour"</string>
 	<!-- Selection choice to sort hosts by nickname. -->
 	<string name="list_menu_sortname">"Sort by name"</string>
 	<string name="list_menu_disconnect">"Disconnect All"</string>
