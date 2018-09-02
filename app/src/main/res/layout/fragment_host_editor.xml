@@ -390,15 +390,6 @@
 			/>
 
 		<com.oxam.oxssh.views.CheckableMenuItem
-			android:id="@+id/start_shell_item"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:icon="@drawable/ic_laptop"
-			android:title="@string/hostpref_wantsession_title"
-			app:summary="@string/hostpref_wantsession_summary"
-			/>
-
-		<com.oxam.oxssh.views.CheckableMenuItem
 			android:id="@+id/stay_connected_item"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"

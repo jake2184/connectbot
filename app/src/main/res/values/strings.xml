@@ -21,17 +21,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
 	xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 	<!-- Summary of what ConnectBot is; used as a short description in the Android running apps list -->
-	<string name="app_desc">"Simple, powerful, open-source SSH client."</string>
+	<string name="app_desc">"Oxam SSH client."</string>
 
 	<!-- Summary of what the ConnectBot service does; displayed in the Android running apps list -->
-	<string name="service_desc">"Maintains SSH connections and loaded pubkeys"</string>
+	<string name="service_desc">"Maintains SSH connections"</string>
 
 	<!-- Window title for the Host List -->
 	<string name="title_hosts_list">"Hosts"</string>
-	<!-- Window title for the Pubkeys List -->
-	<string name="title_pubkey_list">"Pubkeys"</string>
-	<!-- Window title for the Port Forwards List -->
-	<string name="title_port_forwards_list">"Port forwards"</string>
 	<!-- Window title when editing host details -->
 	<string name="title_host_editor">"Edit Host"</string>
 	<!-- Window title for Help index -->
@@ -42,8 +38,6 @@
 	<string name="title_color_picker">"Pick a color"</string>
 	<!-- Window title for the global applications settings activity. -->
 	<string name="title_settings">Settings</string>
-	<!-- Window title when generating a new pubkey. -->
-	<string name="title_pubkey_generate">Generate</string>
 
 	<string name="help_intro">"Please select a topic below for more information on a particular subject."</string>
 
@@ -449,7 +443,7 @@
 	<string name="menu_colors_reset">"Reset"</string>
 
 	<!-- Displayed in the notification bar that connections are active -->
-	<string name="app_is_running">"ConnectBot is running"</string>
+	<string name="app_is_running">"OxSSH is unning"</string>
 
 	<string name="color_red">"red"</string>
 	<string name="color_green">"green"</string>

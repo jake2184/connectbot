@@ -149,7 +149,6 @@
 
 				<data android:scheme="ssh"/>
 				<data android:scheme="telnet"/>
-				<data android:scheme="local"/>
 				<!-- format:  ssh://user@host:port/#nickname  -->
 				<!-- format:  telnet://host:port/#nickname  -->
 				<!-- format:  local://  -->

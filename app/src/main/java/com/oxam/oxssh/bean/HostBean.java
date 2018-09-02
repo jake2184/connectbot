@@ -50,7 +50,7 @@ public class HostBean extends AbstractBean {
 	private boolean compression = false;
 	private String encoding = HostDatabase.ENCODING_DEFAULT;
 	private boolean stayConnected = false;
-	private boolean quickDisconnect = false;
+	private boolean quickDisconnect = true;
 
 	public HostBean() {
 

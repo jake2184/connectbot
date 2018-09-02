@@ -379,8 +379,6 @@ public class HostEditorFragment extends Fragment {
 			}
 		});
 
-
-
 		mStayConnectedSwitch = view.findViewById(R.id.stay_connected_item);
 		mStayConnectedSwitch.setChecked(mHost.getStayConnected());
 		mStayConnectedSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

@@ -412,7 +412,7 @@ public class HostListActivity extends AppCompatListActivity implements OnHostSta
 			if (makingShortcut) {
 				// create shortcut if requested
 				ShortcutIconResource icon = Intent.ShortcutIconResource.fromContext(
-						HostListActivity.this, R.drawable.icon);
+						HostListActivity.this, R.mipmap.ic_launcher);
 
 				Intent intent = new Intent();
 				intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, contents);
